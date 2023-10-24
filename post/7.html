@@ -1,0 +1,352 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Rust学习第五天 | 须臾的博客</title><meta name="author" content="须臾"><meta name="copyright" content="须臾"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Rust学习第五天1、Rust Slice（切片）类型切片（Slice）是对数据值的部分引用。 字符串切片最简单、最常用的数据切片类型是字符串切片（String Slice）。 12345678fn main() &amp;#123;    let s &#x3D; String::from(&quot;broadcast&quot;);	let part1 &#x3D; &amp;s[0..5];	let part2 &#x3D;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust学习第五天">
+<meta property="og:url" content="https://yxzm.work/post/7.html">
+<meta property="og:site_name" content="须臾的博客">
+<meta property="og:description" content="Rust学习第五天1、Rust Slice（切片）类型切片（Slice）是对数据值的部分引用。 字符串切片最简单、最常用的数据切片类型是字符串切片（String Slice）。 12345678fn main() &amp;#123;    let s &#x3D; String::from(&quot;broadcast&quot;);	let part1 &#x3D; &amp;s[0..5];	let part2 &#x3D;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yxzm.work/img/avatar.png">
+<meta property="article:published_time" content="2023-10-23T02:32:35.840Z">
+<meta property="article:modified_time" content="2023-10-23T02:32:12.266Z">
+<meta property="article:author" content="须臾">
+<meta property="article:tag" content="技术学习">
+<meta property="article:tag" content="Rust">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yxzm.work/img/avatar.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yxzm.work/post/7.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Rust学习第五天',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-10-23 10:32:12'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.css" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/%E9%9F%B3%E4%B9%90"><i class="fa-fw /music/"></i><span> 0</span></a></li><li><a class="site-page child" href="/%E7%94%B5%E5%BD%B1"><i class="fa-fw /movies/"></i><span> 1</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="须臾的博客"><span class="site-name">须臾的博客</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/%E9%9F%B3%E4%B9%90"><i class="fa-fw /music/"></i><span> 0</span></a></li><li><a class="site-page child" href="/%E7%94%B5%E5%BD%B1"><i class="fa-fw /movies/"></i><span> 1</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Rust学习第五天</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-10-23T02:32:35.840Z" title="发表于 2023-10-23 10:32:35">2023-10-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-10-23T02:32:12.266Z" title="更新于 2023-10-23 10:32:12">2023-10-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Rust/">Rust</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Rust学习第五天"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Rust学习第五天"><a href="#Rust学习第五天" class="headerlink" title="Rust学习第五天"></a>Rust学习第五天</h1><h2 id="1、Rust-Slice（切片）类型"><a href="#1、Rust-Slice（切片）类型" class="headerlink" title="1、Rust Slice（切片）类型"></a>1、Rust Slice（切片）类型</h2><p>切片（Slice）是对数据值的部分引用。</p>
+<h3 id="字符串切片"><a href="#字符串切片" class="headerlink" title="字符串切片"></a>字符串切片</h3><p>最简单、最常用的数据切片类型是字符串切片（String Slice）。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">s</span> = <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;broadcast&quot;</span>);</span><br><span class="line">	<span class="keyword">let</span> <span class="variable">part1</span> = &amp;s[<span class="number">0</span>..<span class="number">5</span>];</span><br><span class="line">	<span class="keyword">let</span> <span class="variable">part2</span> = &amp;s[<span class="number">5</span>..<span class="number">9</span>];</span><br><span class="line"></span><br><span class="line">	<span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;=&#123;&#125;+&#123;&#125;&quot;</span>, s, part1, part2);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">broadcast=broad+cast</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://www.runoob.com/wp-content/uploads/2020/04/rust-slice1.png" alt="img"></p>
+<p>上图解释了字符串切片的原理（注：Rust 中的字符串类型实质上记录了字符在内存中的起始位置和其长度，我们暂时了解到这一点）。</p>
+<p><strong>使用 .. 表示范围的语法在循环章节中出现过。x..y 表示 [x, y) 的数学含义。.. 两边可以没有运算数：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">..y 等价于 0..y</span><br><span class="line">x.. 等价于位置 x 到数据结束</span><br><span class="line">.. 等价于位置 0 到结束</span><br></pre></td></tr></table></figure>
+
+<p><strong>数据切片的原理实际上是类似于指针一样记录初始位置选定切片长度之后对原数据进行切片。</strong></p>
+<p><strong>注意：</strong>到目前为止，尽量不要在字符串中使用非英文字符，因为编码的问题。具体原因会在”字符串”章节叙述。</p>
+<p><strong>被切片引用的字符串禁止更改其值：</strong></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">s</span> = <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;test&quot;</span>);</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">slice</span> = &amp;s[<span class="number">0</span>..<span class="number">3</span>];</span><br><span class="line">    s.<span class="title function_ invoke__">push_str</span>(<span class="string">&quot;yes!&quot;</span>); <span class="comment">// 错误</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;slice = &#123;&#125;&quot;</span>, slice);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段程序不正确。</p>
+<p>s 被部分引用，禁止更改其值。</p>
+<p>实际上，到目前为止你一定疑惑为什么每一次使用字符串都要这样写<strong>String::from(“test”)</strong> ，直接写 <strong>“test”</strong> 不行吗？</p>
+<p>事已至此我们必须分辨这两者概念的区别了。</p>
+<p><strong>在 Rust 中有两种常用的字符串类型：str 和 String。str 是 Rust 核心语言类型，就是本章一直在讲的字符串切片（String Slice），常常以引用的形式出现（&amp;str）。</strong></p>
+<p>凡是用双引号包括的字符串常量整体的类型性质都是 <strong>&amp;str</strong>：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">s</span> = <span class="string">&quot;hello&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这里的 s 就是一个 &amp;str 类型的变量。</p>
+<p><strong>String 类型是 Rust 标准公共库提供的一种数据类型，它的功能更完善——它支持字符串的追加、清空等实用的操作。String 和 str 除了同样拥有一个字符开始位置属性和一个字符串长度属性以外还有一个容量（capacity）属性。</strong></p>
+<p><strong>String 和 str 都支持切片，切片的结果是 &amp;str 类型的数据。</strong></p>
+<p><strong>注意：切片结果必须是引用类型，但开发者必须自己明示这一点:</strong></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">slice</span> = &amp;s[<span class="number">0</span>..<span class="number">3</span>];</span><br></pre></td></tr></table></figure>
+
+<p>有一个快速的办法可以将 String 转换成 &amp;str：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">s1</span> = <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;hello&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">s2</span> = &amp;s1[..];</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="非字符串切片"><a href="#非字符串切片" class="headerlink" title="非字符串切片"></a>非字符串切片</h3><p>除了字符串以外，其他一些线性数据结构也支持切片操作，例如数组：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">arr</span> = [<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>];</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">part</span> = &amp;arr[<span class="number">0</span>..<span class="number">3</span>];</span><br><span class="line">    <span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> part.<span class="title function_ invoke__">iter</span>() &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2、Rust结构体"><a href="#2、Rust结构体" class="headerlink" title="2、Rust结构体"></a>2、Rust结构体</h2><p><strong>Rust 中的结构体（Struct）与元组（Tuple）都可以将若干个类型不一定相同的数据捆绑在一起形成整体，但结构体的每个成员和其本身都有一个名字，这样访问它成员的时候就不用记住下标了。</strong></p>
+<p><strong>元组常用于非定义的多值传递，而结构体用于规范常用的数据结构。结构体的每个成员叫做”字段”。</strong></p>
+<h3 id="结构体定义"><a href="#结构体定义" class="headerlink" title="结构体定义"></a>结构体定义</h3><p>这是一个结构体定义：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Site</span> &#123;</span><br><span class="line">    domain: <span class="type">String</span>,</span><br><span class="line">    name: <span class="type">String</span>,</span><br><span class="line">    nation: <span class="type">String</span>,</span><br><span class="line">    found: <span class="type">u32</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：如果你常用 C&#x2F;C++，请记住在 Rust 里 struct 语句仅用来定义，不能声明实例，结尾不需要 ; 符号，而且每个字段定义之后用 , 分隔。</strong></p>
+<h3 id="结构体实例"><a href="#结构体实例" class="headerlink" title="结构体实例"></a>结构体实例</h3><p>Rust 很多地方受 JavaScript 影响，在实例化结构体的时候用 JSON 对象的 <strong>key: value</strong> 语法来实现定义：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">xuyu</span> = Site &#123;</span><br><span class="line">    domain: <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;xuyu&quot;</span>),</span><br><span class="line">    name: <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;ling&quot;</span>),</span><br><span class="line">    nation: <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;China&quot;</span>)</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>如果你不了解 JSON 对象，你可以不用管它，记住格式就可以了：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">结构体类名 &#123;</span><br><span class="line">    字段名 : 字段值,</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>这样的好处是不仅使程序更加直观，还不需要按照定义的顺序来输入成员的值。</p>
+<p>如果正在实例化的结构体有字段名称和现存变量名称一样的，可以简化书写：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">domain</span> = <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;xuyu&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">name</span> = <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;xu&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">runoob</span> = Site &#123;</span><br><span class="line">    domain,  <span class="comment">// 等同于 domain : domain,</span></span><br><span class="line">    name,    <span class="comment">// 等同于 name : name,</span></span><br><span class="line">    nation: <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;China&quot;</span>)</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>有这样一种情况：你想要新建一个结构体的实例，其中大部分属性需要被设置成与现存的一个结构体属性一样，仅需更改其中的一两个字段的值，可以使用结构体更新语法：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">site</span> = Site &#123;</span><br><span class="line">    domain: <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;www.runoob.com&quot;</span>),</span><br><span class="line">    name: <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;RUNOOB&quot;</span>),</span><br><span class="line">    ..runoob</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：..runoob 后面不可以有逗号。这种语法不允许一成不变的复制另一个结构体实例，意思就是说至少重新设定一个字段的值才能引用其他实例的值。</strong></p>
+<h3 id="元组结构体"><a href="#元组结构体" class="headerlink" title="元组结构体"></a>元组结构体</h3><p>有一种更简单的定义和使用结构体的方式：<strong>元组结构体</strong>。</p>
+<p>元组结构体是一种形式是元组的结构体。</p>
+<p>与元组的区别是它有名字和固定的类型格式。它存在的意义是为了处理那些需要定义类型（经常使用）又不想太复杂的简单数据：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Color</span>(<span class="type">u8</span>, <span class="type">u8</span>, <span class="type">u8</span>);</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Point</span>(<span class="type">f64</span>, <span class="type">f64</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">black</span> = <span class="title function_ invoke__">Color</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">origin</span> = <span class="title function_ invoke__">Point</span>(<span class="number">0.0</span>, <span class="number">0.0</span>);</span><br></pre></td></tr></table></figure>
+
+<p>“颜色”和”点坐标”是常用的两种数据类型，但如果实例化时写个大括号再写上两个名字就为了可读性牺牲了便捷性，Rust 不会遗留这个问题。元组结构体对象的使用方式和元组一样，通过 . 和下标来进行访问：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">Color</span>(<span class="type">u8</span>, <span class="type">u8</span>, <span class="type">u8</span>);</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">Point</span>(<span class="type">f64</span>, <span class="type">f64</span>);</span><br><span class="line">    </span><br><span class="line">	<span class="keyword">let</span> <span class="variable">black</span> = <span class="title function_ invoke__">Color</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">let</span> <span class="variable">origin</span> = <span class="title function_ invoke__">Point</span>(<span class="number">0.0</span>, <span class="number">0.0</span>);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">println!</span>(<span class="string">&quot;black = (&#123;&#125;, &#123;&#125;, &#123;&#125;)&quot;</span>, black.<span class="number">0</span>, black.<span class="number">1</span>, black.<span class="number">2</span>);</span><br><span class="line">	<span class="built_in">println!</span>(<span class="string">&quot;origin = (&#123;&#125;, &#123;&#125;)&quot;</span>, origin.<span class="number">0</span>, origin.<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="结构体所有权"><a href="#结构体所有权" class="headerlink" title="结构体所有权"></a>结构体所有权</h3><p>结构体必须掌握字段值所有权，因为结构体失效的时候会释放所有字段。</p>
+<p>这就是为什么案例中使用了 String 类型而不使用 &amp;str 的原因。</p>
+<h3 id="输出结构体"><a href="#输出结构体" class="headerlink" title="输出结构体"></a>输出结构体</h3><p>调试中，完整地显示出一个结构体实例是非常有用的。但如果我们手动的书写一个格式会非常的不方便。所以 Rust 提供了一个方便地输出一整个结构体的方法：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[derive(Debug)]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Rectangle</span> &#123;</span><br><span class="line">    width: <span class="type">u32</span>,</span><br><span class="line">    height: <span class="type">u32</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">rect1</span> = Rectangle &#123; width: <span class="number">30</span>, height: <span class="number">50</span> &#125;;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">println!</span>(<span class="string">&quot;rect1 is &#123;:?&#125;&quot;</span>, rect1);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rect1 is Rectangle &#123; width: <span class="number">30</span>, height: <span class="number">50</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>如第一行所示：一定要导入调试库 <strong>#[derive(Debug)]</strong> ，之后在 println 和 print 宏中就可以用 <strong>{:?}</strong> 占位符输出一整个结构体：</p>
+<p>如果属性较多的话可以使用另一个占位符 <strong>{:#?}</strong> 。</p>
+<p>运行结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">rect1 is Rectangle &#123;</span><br><span class="line">    width: 30,</span><br><span class="line">    height: 50</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="结构体方法"><a href="#结构体方法" class="headerlink" title="结构体方法"></a>结构体方法</h3><p>方法（Method）和函数（Function）类似，只不过它是用来操作结构体实例的。</p>
+<p>如果你学习过一些面向对象的语言，那你一定很清楚函数一般放在类定义里并在函数中用 this 表示所操作的实例。</p>
+<p>Rust 语言不是面向对象的，从它所有权机制的创新可以看出这一点。但是面向对象的珍贵思想可以在 Rust 实现。</p>
+<p><strong>结构体方法的第一个参数必须是 &amp;self，不需声明类型，因为 self 不是一种风格而是关键字。</strong></p>
+<p>计算一个矩形的面积：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Rectangle</span> &#123;</span><br><span class="line">    width: <span class="type">u32</span>,</span><br><span class="line">    height: <span class="type">u32</span>,</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">Rectangle</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">area</span>(&amp;<span class="keyword">self</span>) <span class="punctuation">-&gt;</span> <span class="type">u32</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.width * <span class="keyword">self</span>.height</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">rect1</span> = Rectangle &#123; width: <span class="number">30</span>, height: <span class="number">50</span> &#125;;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;rect1&#x27;s area is &#123;&#125;&quot;</span>, rect1.<span class="title function_ invoke__">area</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rect1<span class="symbol">&#x27;s</span> area is <span class="number">1500</span></span><br></pre></td></tr></table></figure>
+
+<p>请注意，在调用结构体方法的时候不需要填写 self ，这是出于对使用方便性的考虑。</p>
+<p>一个多参数的例子：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Rectangle</span> &#123;</span><br><span class="line">    width: <span class="type">u32</span>,</span><br><span class="line">    height: <span class="type">u32</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">Rectangle</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">area</span>(&amp;<span class="keyword">self</span>) <span class="punctuation">-&gt;</span> <span class="type">u32</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.width * <span class="keyword">self</span>.height</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">wider</span>(&amp;<span class="keyword">self</span>, rect: &amp;Rectangle) <span class="punctuation">-&gt;</span> <span class="type">bool</span> &#123;</span><br><span class="line">    <span class="keyword">self</span>.width &gt; rect.width</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">rect1</span> = Rectangle &#123; width: <span class="number">30</span>, height: <span class="number">50</span> &#125;;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">rect2</span> = Rectangle &#123; width: <span class="number">40</span>, height: <span class="number">20</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, rect1.<span class="title function_ invoke__">wider</span>(&amp;rect2));</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<p>这个程序计算 rect1 是否比 rect2 更宽。</p>
+<h3 id="结构体关联函数"><a href="#结构体关联函数" class="headerlink" title="结构体关联函数"></a>结构体关联函数</h3><p><strong>之所以”结构体方法”不叫”结构体函数”是因为”函数”这个名字留给了这种函数：它在 impl 块中却没有 &amp;self 参数。</strong></p>
+<p><strong>这种函数不依赖实例，但是使用它需要声明是在哪个 impl 块中的。</strong></p>
+<p><strong>一直使用的 String::from 函数就是一个”关联函数”。</strong></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[derive(Debug)]</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Rectangle</span> &#123;</span><br><span class="line">    width: <span class="type">u32</span>,</span><br><span class="line">    height: <span class="type">u32</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">Rectangle</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">create</span>(width: <span class="type">u32</span>, height: <span class="type">u32</span>) <span class="punctuation">-&gt;</span> Rectangle &#123;</span><br><span class="line">        Rectangle &#123; width, height &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">rect</span> = Rectangle::<span class="title function_ invoke__">create</span>(<span class="number">30</span>, <span class="number">50</span>);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;&#123;:?&#125;&quot;</span>, rect);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Rectangle &#123; width: <span class="number">30</span>, height: <span class="number">50</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>贴士：</strong>结构体 impl 块可以写几次，效果相当于它们内容的拼接！</p>
+<h3 id="单元结构体"><a href="#单元结构体" class="headerlink" title="单元结构体"></a>单元结构体</h3><p>结构体可以只作为一种象征而无需任何成员：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">UnitStruct</span>;</span><br></pre></td></tr></table></figure>
+
+<p>我们称这种没有身体的结构体为单元结构体（Unit Struct）。</p>
+<p>以下是单元结构体的一些常见用途：</p>
+<ol>
+<li><strong>标记器（Marker）</strong>：单元结构体可以用作类型标记，用于表示某种特定的行为或特性。通过为类型添加不同的单元结构体，可以为其赋予不同的语义含义，以供代码中的其他部分使用。</li>
+<li><strong>占位符（Placeholder）</strong>：单元结构体可以占据某种类型的位置，但不需要存储实际的数据。这在某些上下文中是有用的，特别是当你需要使用类型系统或泛型来处理结构体，并且不需要实际的数据。</li>
+<li><strong>接口实现</strong>：单元结构体可以用作实现某个特定接口或特质所必需的类型。有时候，接口可能只需要表明一个行为或属性的存在，而不需要具体的数据内容，这时可以使用单元结构体。</li>
+<li><strong>占位参数</strong>：在某些情况下，你可能需要为泛型类型参数提供一个占位符。单元结构体可以用作泛型类型参数的占位符，以便稍后替换为具体的类型。</li>
+</ol>
+<p>需要注意的是，尽管单元结构体自身没有任何字段，但你仍然可以为其实现方法、特质等。这样可以为其赋予更多的行为和功能。不过，大部分情况下，单元结构体的主要作用是在类型系统和语义上表达一些信息，而不是存储和处理具体的数据。</p>
+<p>本文参考文章链接:<a target="_blank" rel="noopener" href="https://www.runoob.com/rust/rust-struct.html">https://www.runoob.com/rust/rust-struct.html</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://yxzm.work">须臾</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yxzm.work/post/7.html">https://yxzm.work/post/7.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yxzm.work" target="_blank">须臾的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/">技术学习</a><a class="post-meta__tags" href="/tags/Rust/">Rust</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/post/6.html" title="Rust学习第四天"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Rust学习第四天</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/post/3.html" title="Rust学习第一天"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-16</div><div class="title">Rust学习第一天</div></div></a></div><div><a href="/post/4.html" title="Rust学习第二天"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-17</div><div class="title">Rust学习第二天</div></div></a></div><div><a href="/post/5.html" title="Rust学习第三天"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-17</div><div class="title">Rust学习第三天</div></div></a></div><div><a href="/post/6.html" title="Rust学习第四天"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-18</div><div class="title">Rust学习第四天</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">须臾</div><div class="author-info__description">一个普通摸鱼仔</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://haiyong.site/moyu/"><i class="iconfont icon-youxishoubing"></i><span>摸鱼</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content"><b><font color="#e66b6d">欢</font> <font color="#e66d98">迎</font> <font color="#e66cc6">来</font> <font color="#cc6de6">到</font> <font color="#9770e6">我</font> <font color="#6d93e6">的</font> <font color="#6fcde6">博</font> <font color="#72e6b6">客</font> <p align="center"><img src="https://haiyong.site/img/img-blog.csdnimg.cn/f7384c88956d4378b72e47548e19c9f8.gif" width="50" alt="mao"></p> <p align="center">微信号:PoorThoth</p> <p align="center">QQ号:1497245907</p></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Rust%E5%AD%A6%E4%B9%A0%E7%AC%AC%E4%BA%94%E5%A4%A9"><span class="toc-number">1.</span> <span class="toc-text">Rust学习第五天</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81Rust-Slice%EF%BC%88%E5%88%87%E7%89%87%EF%BC%89%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.1.</span> <span class="toc-text">1、Rust Slice（切片）类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%88%87%E7%89%87"><span class="toc-number">1.1.1.</span> <span class="toc-text">字符串切片</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%9E%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%88%87%E7%89%87"><span class="toc-number">1.1.2.</span> <span class="toc-text">非字符串切片</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81Rust%E7%BB%93%E6%9E%84%E4%BD%93"><span class="toc-number">1.2.</span> <span class="toc-text">2、Rust结构体</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93%E5%AE%9A%E4%B9%89"><span class="toc-number">1.2.1.</span> <span class="toc-text">结构体定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.2.2.</span> <span class="toc-text">结构体实例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%83%E7%BB%84%E7%BB%93%E6%9E%84%E4%BD%93"><span class="toc-number">1.2.3.</span> <span class="toc-text">元组结构体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93%E6%89%80%E6%9C%89%E6%9D%83"><span class="toc-number">1.2.4.</span> <span class="toc-text">结构体所有权</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%87%BA%E7%BB%93%E6%9E%84%E4%BD%93"><span class="toc-number">1.2.5.</span> <span class="toc-text">输出结构体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.6.</span> <span class="toc-text">结构体方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93%E5%85%B3%E8%81%94%E5%87%BD%E6%95%B0"><span class="toc-number">1.2.7.</span> <span class="toc-text">结构体关联函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E5%85%83%E7%BB%93%E6%9E%84%E4%BD%93"><span class="toc-number">1.2.8.</span> <span class="toc-text">单元结构体</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/7.html" title="Rust学习第五天">Rust学习第五天</a><time datetime="2023-10-23T02:32:35.840Z" title="发表于 2023-10-23 10:32:35">2023-10-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/6.html" title="Rust学习第四天">Rust学习第四天</a><time datetime="2023-10-18T08:20:41.266Z" title="发表于 2023-10-18 16:20:41">2023-10-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/5.html" title="Rust学习第三天">Rust学习第三天</a><time datetime="2023-10-17T06:22:56.477Z" title="发表于 2023-10-17 14:22:56">2023-10-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/4.html" title="Rust学习第二天">Rust学习第二天</a><time datetime="2023-10-17T02:11:06.468Z" title="发表于 2023-10-17 10:11:06">2023-10-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/3.html" title="Rust学习第一天">Rust学习第一天</a><time datetime="2023-10-16T07:08:54.008Z" title="发表于 2023-10-16 15:08:54">2023-10-16</time></div></div></div></div></div></div></main><footer id="footer" style="background: flase"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 须臾</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text"><imgsrc="https://haiyong.site/img/icp.png"><a href="https://beian.miit.gov.cn/#/Integrated/index"  style="color:white" target="_blank">黔ICP备2023008750号-1</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><div class="aplayer no-destroy" data-id="7902836939" data-server="netease" data-type="playlist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="none" data-autoplay="false" muted></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="I,think,therefore,I,am" data-fontsize="15px" data-random="false" async="async"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --><script data-pjax>
+  function butterfly_clock_anzhiyu_injector_config(){
+    var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+    var item_html = '<div class="card-widget card-clock"><div class="card-glass"><div class="card-background"><div class="card-content"><div id="hexo_electric_clock"><img class="entered loading" id="card-clock-loading" src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/loading.gif" style="height: 120px; width: 100%;" data-ll-status="loading"/></div></div></div></div></div>';
+    console.log('已挂载butterfly_clock_anzhiyu')
+    if(parent_div_git) {
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var qweather_key = 'b16a1fa0e63c46a4b8f28abfb06ae3fe';
+  var gaud_map_key = 'e2b04289e870b005374ee030148d64fd&s=rsv3';
+  var baidu_ak_key = 'undefined';
+  var flag = 0;
+  var clock_rectangle = '112.982279,28.19409';
+  var clock_default_rectangle_enable = 'false';
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  </script><script src="https://widget.qweather.net/simple/static/js/he-simple-common.js?v=2.0"></script><script data-pjax src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.js"></script><!-- hexo injector body_end end --></body></html>
