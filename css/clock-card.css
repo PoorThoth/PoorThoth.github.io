@@ -1,0 +1,88 @@
+<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>/* 自写时间/天气卡片 —— 样式（跟随 Butterfly 的卡片风格与深浅色变量） */
+@font-face {
+  font-family: "UnidreamLED";
+  src: url("/fonts/UnidreamLED.ttf") format("truetype");
+  font-display: swap;
+}
+
+.card-clock-own {
+  padding: 1rem 1.2rem 1.1rem;
+  text-align: center;
+}
+
+.card-clock-own .own-time {
+  font-family: "UnidreamLED", "Consolas", "Menlo", monospace;
+  font-size: 2.5rem;
+  line-height: 1.15;
+  letter-spacing: 2px;
+  color: var(--font-color, #4c4948);
+}
+
+.card-clock-own .own-date {
+  margin-top: 0.15rem;
+  font-size: 0.85rem;
+  color: var(--font-color, #4c4948);
+  opacity: 0.75;
+}
+
+.card-clock-own .own-weather {
+  margin-top: 0.8rem;
+  padding-top: 0.7rem;
+  border-top: 1px dashed var(--border-color, rgba(128, 128, 128, 0.25));
+  font-size: 0.9rem;
+  color: var(--font-color, #4c4948);
+}
+
+.card-clock-own .own-w-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+}
+
+.card-clock-own .own-w-emoji {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.card-clock-own .own-w-temp {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.card-clock-own .own-w-desc {
+  opacity: 0.85;
+}
+
+.card-clock-own .own-w-range {
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.card-clock-own .own-w-days {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+.card-clock-own .own-w-day {
+  flex: 1;
+  padding: 0.3rem 0.1rem;
+  border-radius: 6px;
+  background: var(--btn-hover-color, rgba(128, 128, 128, 0.08));
+}
+
+.card-clock-own .own-city {
+  margin-top: 0.6rem;
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+.card-clock-own .own-fail {
+  opacity: 0.6;
+  font-size: 0.8rem;
+}
