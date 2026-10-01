@@ -1,0 +1,392 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>RAG 不靠感觉：20 条评测集、命中率与拒答阈值 | 须臾的博客</title><meta name="author" content="须臾"><meta name="copyright" content="须臾"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="给知识库问答做一套可复现的评测：15 条正例 + 5 条负例、命中@k &#x2F; MRR &#x2F; 拒答率，以及&quot;拒答阈值&quot;怎么用数据定出来。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RAG 不靠感觉：20 条评测集、命中率与拒答阈值">
+<meta property="og:url" content="https://lingguiqian.com/post/25034.html">
+<meta property="og:site_name" content="须臾的博客">
+<meta property="og:description" content="给知识库问答做一套可复现的评测：15 条正例 + 5 条负例、命中@k &#x2F; MRR &#x2F; 拒答率，以及&quot;拒答阈值&quot;怎么用数据定出来。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lingguiqian.com/img/avatar.png">
+<meta property="article:published_time" content="2026-10-01T15:25:00.000Z">
+<meta property="article:modified_time" content="2026-10-01T13:17:39.149Z">
+<meta property="article:author" content="须臾">
+<meta property="article:tag" content="RAG">
+<meta property="article:tag" content="检索">
+<meta property="article:tag" content="评测">
+<meta property="article:tag" content="知识库">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lingguiqian.com/img/avatar.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "RAG 不靠感觉：20 条评测集、命中率与拒答阈值",
+  "url": "https://lingguiqian.com/post/25034.html",
+  "image": "https://lingguiqian.com/img/avatar.png",
+  "datePublished": "2026-10-01T15:25:00.000Z",
+  "dateModified": "2026-10-01T13:17:39.149Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "须臾",
+      "url": "https://lingguiqian.com"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://lingguiqian.com/post/25034.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'RAG 不靠感觉：20 条评测集、命中率与拒答阈值',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.css" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (false) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">23</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/portfolio/"><i class="fa-fw fas fa-briefcase"></i><span> 接单</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">须臾的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">RAG 不靠感觉：20 条评测集、命中率与拒答阈值</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/portfolio/"><i class="fa-fw fas fa-briefcase"></i><span> 接单</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">RAG 不靠感觉：20 条评测集、命中率与拒答阈值</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-10-01T15:25:00.000Z" title="发表于 2026-10-01 23:25:00">2026-10-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-10-01T13:17:39.149Z" title="更新于 2026-10-01 21:17:39">2026-10-01</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI-%E5%B7%A5%E7%A8%8B/">AI 工程</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="为什么要评测"><a href="#为什么要评测" class="headerlink" title="为什么要评测"></a>为什么要评测</h2><p>搭一个 RAG 检索问答不难，难的是回答这个问题：<strong>它到底行不行？</strong></p>
+<p>我见过太多”效果还行”的知识库——问几个问题答得不错，就上线了。但真正该问的是：</p>
+<ul>
+<li>该答的，答对了吗？</li>
+<li><strong>不该答的（知识库里没有的），它有没有硬编？</strong></li>
+<li>我调了分块&#x2F;模型&#x2F;阈值之后，<strong>是变好了还是变坏了？</strong></li>
+</ul>
+<p>没有评测集，这三个问题一个都答不了，只能靠感觉。而”感觉变好了”是最贵的错觉。</p>
+<h2 id="一、评测集：20-条，其中-5-条必须”答不出来”"><a href="#一、评测集：20-条，其中-5-条必须”答不出来”" class="headerlink" title="一、评测集：20 条，其中 5 条必须”答不出来”"></a>一、评测集：20 条，其中 5 条必须”答不出来”</h2><p>我用的语料是一份自造的合成手册（6 篇文档），问题分两类：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>数量</th>
+<th>期望行为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>正例（语料里有答案）</td>
+<td>15</td>
+<td>检索到正确文档并引用</td>
+</tr>
+<tr>
+<td><strong>负例（语料里没有答案）</strong></td>
+<td><strong>5</strong></td>
+<td><strong>明确拒答，不能编</strong></td>
+</tr>
+</tbody></table>
+<p><strong>负例才是评测的灵魂。</strong> 只测正例的系统，会奖励”什么都敢答”的模型——分数很好看，上线全是幻觉。负例的作用就是把”敢编”的成本显式计进来。</p>
+<p>设计负例有个小技巧：<strong>用同领域但语料里不存在的问题</strong>（比如手册里写了差旅报销，我就问”加班餐补每天多少钱”）。这样模型不能靠”话题不相关”蒙对，必须真的去检索。</p>
+<h2 id="二、四个指标"><a href="#二、四个指标" class="headerlink" title="二、四个指标"></a>二、四个指标</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">命中@1 / 命中@3 / 命中@5   正确文档是否出现在前 k 条</span><br><span class="line">MRR                        首个正确结果的排名倒数（衡量&quot;排得靠不靠前&quot;）</span><br><span class="line">负例拒答率                  该拒答的是否拒答</span><br><span class="line">端到端准确率                正例命中 + 负例拒答 的综合</span><br></pre></td></tr></table></figure>
+
+<h2 id="三、实测结果（零依赖骨架）"><a href="#三、实测结果（零依赖骨架）" class="headerlink" title="三、实测结果（零依赖骨架）"></a>三、实测结果（零依赖骨架）</h2><p>这套骨架我刻意用<strong>纯标准库</strong>实现（BM25 + 向量通道占位 + RRF 融合 + 轻量重排），目的是先把<strong>评测闭环</strong>跑通，而不是先堆模型：</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>命中@1</td>
+<td><strong>0.933</strong></td>
+</tr>
+<tr>
+<td>命中@3</td>
+<td><strong>1.000</strong></td>
+</tr>
+<tr>
+<td>MRR</td>
+<td><strong>0.967</strong></td>
+</tr>
+<tr>
+<td>负例拒答率</td>
+<td><strong>1.000</strong></td>
+</tr>
+<tr>
+<td>端到端</td>
+<td><strong>1.000</strong></td>
+</tr>
+</tbody></table>
+<p>注意：<strong>这不是”我的 RAG 很好”的意思。</strong> 语法语料干净、问题与原文措辞接近，分数自然高。真实的内部文档会有表格、扫描件、术语变体、多版本冲突——那时候分数会掉下来，而<strong>评测集的作用就是让这个”掉”看得见</strong>。</p>
+<h2 id="四、拒答阈值：用扫描定，不用拍脑袋"><a href="#四、拒答阈值：用扫描定，不用拍脑袋" class="headerlink" title="四、拒答阈值：用扫描定，不用拍脑袋"></a>四、拒答阈值：用扫描定，不用拍脑袋</h2><p>拒答不是一个布尔开关，而是一个阈值。阈值定得太低，什么都敢答；定得太高，该答的也不答。所以我把阈值扫描出来看权衡：</p>
+<table>
+<thead>
+<tr>
+<th>阈值</th>
+<th>正例命中@3</th>
+<th>负例拒答率</th>
+<th>端到端</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0.10</td>
+<td>100%</td>
+<td>0%</td>
+<td>0.75</td>
+</tr>
+<tr>
+<td>0.25</td>
+<td>100%</td>
+<td>40%</td>
+<td>0.85</td>
+</tr>
+<tr>
+<td><strong>0.34</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>1.00</strong></td>
+</tr>
+<tr>
+<td>0.45</td>
+<td>93%</td>
+<td>100%</td>
+<td>0.95</td>
+</tr>
+<tr>
+<td>0.50</td>
+<td>87%</td>
+<td>100%</td>
+<td>0.90</td>
+</tr>
+</tbody></table>
+<p>看这张表就明白为什么不能拍脑袋了：<strong>阈值 0.10 时”命中率”满分</strong>（因为它什么都答），但端到端只有 0.75；真正的最优在 0.34。<strong>只盯命中率，你会一路把阈值调低——然后得到一个自信的胡说八道机器。</strong></p>
+<h2 id="五、踩到的坑：先怀疑标注，再怀疑系统"><a href="#五、踩到的坑：先怀疑标注，再怀疑系统" class="headerlink" title="五、踩到的坑：先怀疑标注，再怀疑系统"></a>五、踩到的坑：先怀疑标注，再怀疑系统</h2><p>评测跑出来，有一条失败：问”离职后多久回收 VPN 账号和系统权限”，检索排到了《离职交接》那篇，而不是我标注的《VPN 与远程办公》。</p>
+<p>第一反应是”检索有问题”。但打开语料一看——<strong>两篇文档都写了这件事</strong>（《离职交接》原文就是”按 VPN 规范中的时限回收”）。这不是检索错，是<strong>我的评测标注有问题</strong>：这条问题的正确答案其实是两篇都算。</p>
+<p>从这里得到两条经验：</p>
+<ol>
+<li><strong>评测失败先查标注</strong>。语料本身有重叠、有重复表述时，评测集不是”标准答案”，而是”我以为的标准答案”。</li>
+<li><strong>评测集本身也要评审</strong>：每条问题写下”为什么期望这个答案”，比只写答案有用。</li>
+</ol>
+<h2 id="六、下一步的升级路径"><a href="#六、下一步的升级路径" class="headerlink" title="六、下一步的升级路径"></a>六、下一步的升级路径</h2><p>评测闭环跑通之后，替换组件就是有方向的迭代：</p>
+<ol>
+<li><strong>真向量检索</strong>：换成多语言 embedding（bge-m3 &#x2F; qwen3-embedding 一类），先看命中@3 提升多少；</li>
+<li><strong>重排</strong>：加 cross-encoder 重排，主要影响命中@1 与 MRR；</li>
+<li><strong>混合检索</strong>：BM25 与向量做融合，比单通道更稳（专有名词靠词面，语义靠向量）；</li>
+<li><strong>引用溯源</strong>：回答必须带文档出处，前端可点开原文——<strong>这一步对”能不能被信任”比指标更重要</strong>。</li>
+</ol>
+<p>每一步都跑同一套评测集。<strong>这样”改进”就不是感觉，而是一次可比的实验。</strong></p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>如果只能带走一句话：<strong>先写 5 条”应该答不出来”的问题。</strong> 它们会立刻暴露你的系统到底是在检索，还是在编。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://lingguiqian.com">须臾</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://lingguiqian.com/post/25034.html">https://lingguiqian.com/post/25034.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://lingguiqian.com" target="_blank">须臾的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/RAG/">RAG</a><a class="post-meta__tags" href="/tags/%E6%A3%80%E7%B4%A2/">检索</a><a class="post-meta__tags" href="/tags/%E8%AF%84%E6%B5%8B/">评测</a><a class="post-meta__tags" href="/tags/%E7%9F%A5%E8%AF%86%E5%BA%93/">知识库</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/post/56933.html" title="一个&quot;静默丢弃&quot;的编码坑：脚本明明有输出，系统却什么都没收到"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">一个"静默丢弃"的编码坑：脚本明明有输出，系统却什么都没收到</div></div><div class="info-2"><div class="info-item-1">现象一个定时脚本负责把内容推送到聊天工具。运行记录显示任务正常执行，但用户什么都没收到——没有报错，没有告警，日志里只有一行： 1empty stdout — silent run  （静默运行：输出为空，按设计什么都不发。） 但脚本手动跑，输出明明白白有几百字。 这类 bug 为什么难查因为它什么都不说。脚本没崩（退出码 0）、没有异常、没有超时，调度器也认为一切正常。整个系统里没有一个环节认为出错——除了最终的用户。 静默失败是最贵的失败：它消耗的不是排查时间，而是信任（”我明明让系统每天发给我”）。 排查：九组对照，把变量一个一个钉死我一开始的思路是错的——去读调度器源码，想搞清它的输出捕获逻辑。读了半天，不如做一组对照实验快。 于是写 9 个最小脚本，唯一变量是”输出内容 + 编码方式”：    变体 脚本做什么 结果    A0 只输出纯 ASCII ✅ 收到（内容正确）   C 中文 + reconfigure(utf-8) ⚠️ 收到，但乱码：变体C 变成 鍙樹綋C   A1 中文 + reconfigure(utf-8, errors=replace) ❌ 静默 ...</div></div></div></a><a class="pagination-related" href="/post/58893.html" title="桌面客户端交付实录：Tauri 2 的体积、冷启动与进程管理实测"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">桌面客户端交付实录：Tauri 2 的体积、冷启动与进程管理实测</div></div><div class="info-2"><div class="info-item-1">为什么不用 Electron需求很简单：一个已经在网页上跑得好好的产品，想要一个桌面客户端——能双击打开、能常驻托盘、能自己更新。 第一反应是 Electron，我先把对照实测做了：    对照项 Electron Tauri 2（本项目）    运行时体积 368 MB（实测） 随包不携带浏览器（用系统 WebView2）   首屏时间 3017 ms（实测） 冷启动中位 608 ms   交付包 体积大 7.93 MB（绿色 zip）   差了将近 50 倍。所以我选了 Tauri 2，代价也说清楚：Windows 上依赖 WebView2、Rust 侧调试成本更高、生态比 Electron 小。**这些代价换来的是”用户下载 8 MB 而不是 300 MB”**，对我要交付的场景是划算的。 架构：壳只做两件事最重要的一条设计决定：这个外壳里没有一行业务逻辑。它只做两件事——进程管理和呈现。 1234567891011┌──────────────────────────────────────────┐│  Tauri 2 壳（Rust）                  ...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">须臾</div><div class="author-info-description">Go / 量化交易系统 / AI Agent 工程</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">23</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" href="/portfolio/"><i class="fas fa-briefcase"></i><span>接单 · 作品集</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/PoorThoth" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:yil72866@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content"><b><font color="#e66b6d">欢</font> <font color="#e66d98">迎</font> <font color="#e66cc6">来</font> <font color="#cc6de6">到</font> <font color="#9770e6">我</font> <font color="#6d93e6">的</font> <font color="#6fcde6">博</font> <font color="#72e6b6">客</font> <p align="center">Go · 量化交易系统 · AI Agent 工程</p> <p align="center">合作 / 接单 → 菜单「接单」或 <a href="/portfolio/">作品集</a></p> <p align="center">微信号:PoorThoth</p> <p align="center">QQ号:1497245907</p></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E8%AF%84%E6%B5%8B"><span class="toc-number">1.</span> <span class="toc-text">为什么要评测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%AF%84%E6%B5%8B%E9%9B%86%EF%BC%9A20-%E6%9D%A1%EF%BC%8C%E5%85%B6%E4%B8%AD-5-%E6%9D%A1%E5%BF%85%E9%A1%BB%E2%80%9D%E7%AD%94%E4%B8%8D%E5%87%BA%E6%9D%A5%E2%80%9D"><span class="toc-number">2.</span> <span class="toc-text">一、评测集：20 条，其中 5 条必须”答不出来”</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%9B%9B%E4%B8%AA%E6%8C%87%E6%A0%87"><span class="toc-number">3.</span> <span class="toc-text">二、四个指标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%AE%9E%E6%B5%8B%E7%BB%93%E6%9E%9C%EF%BC%88%E9%9B%B6%E4%BE%9D%E8%B5%96%E9%AA%A8%E6%9E%B6%EF%BC%89"><span class="toc-number">4.</span> <span class="toc-text">三、实测结果（零依赖骨架）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%8B%92%E7%AD%94%E9%98%88%E5%80%BC%EF%BC%9A%E7%94%A8%E6%89%AB%E6%8F%8F%E5%AE%9A%EF%BC%8C%E4%B8%8D%E7%94%A8%E6%8B%8D%E8%84%91%E8%A2%8B"><span class="toc-number">5.</span> <span class="toc-text">四、拒答阈值：用扫描定，不用拍脑袋</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E8%B8%A9%E5%88%B0%E7%9A%84%E5%9D%91%EF%BC%9A%E5%85%88%E6%80%80%E7%96%91%E6%A0%87%E6%B3%A8%EF%BC%8C%E5%86%8D%E6%80%80%E7%96%91%E7%B3%BB%E7%BB%9F"><span class="toc-number">6.</span> <span class="toc-text">五、踩到的坑：先怀疑标注，再怀疑系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E4%B8%8B%E4%B8%80%E6%AD%A5%E7%9A%84%E5%8D%87%E7%BA%A7%E8%B7%AF%E5%BE%84"><span class="toc-number">7.</span> <span class="toc-text">六、下一步的升级路径</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F%E7%BB%93"><span class="toc-number">8.</span> <span class="toc-text">小结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/56933.html" title="一个&quot;静默丢弃&quot;的编码坑：脚本明明有输出，系统却什么都没收到">一个&quot;静默丢弃&quot;的编码坑：脚本明明有输出，系统却什么都没收到</a><time datetime="2026-10-01T15:45:00.000Z" title="发表于 2026-10-01 23:45:00">2026-10-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/25034.html" title="RAG 不靠感觉：20 条评测集、命中率与拒答阈值">RAG 不靠感觉：20 条评测集、命中率与拒答阈值</a><time datetime="2026-10-01T15:25:00.000Z" title="发表于 2026-10-01 23:25:00">2026-10-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/58893.html" title="桌面客户端交付实录：Tauri 2 的体积、冷启动与进程管理实测">桌面客户端交付实录：Tauri 2 的体积、冷启动与进程管理实测</a><time datetime="2026-10-01T15:05:00.000Z" title="发表于 2026-10-01 23:05:00">2026-10-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/3658.html" title="给 AI 工具装闸门：权限、人工确认与审计日志怎么落地">给 AI 工具装闸门：权限、人工确认与审计日志怎么落地</a><time datetime="2026-10-01T14:45:00.000Z" title="发表于 2026-10-01 22:45:00">2026-10-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/14389.html" title="我在做什么，以及我能提供什么">我在做什么，以及我能提供什么</a><time datetime="2026-10-01T14:30:00.000Z" title="发表于 2026-10-01 22:30:00">2026-10-01</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 须臾</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.0</a></span></div><div class="footer_custom_text"><imgsrc="https://haiyong.site/img/icp.png"><a href="https://beian.miit.gov.cn/#/Integrated/index"  style="color:white" target="_blank"></a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><div class="js-pjax"></div><div class="aplayer no-destroy" data-id="7902836939" data-server="netease" data-type="playlist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="none" data-autoplay="false" muted></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --><script data-pjax>
+  function butterfly_clock_anzhiyu_injector_config(){
+    var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+    var item_html = '<div class="card-widget card-clock"><div class="card-glass"><div class="card-background"><div class="card-content"><div id="hexo_electric_clock"><img class="entered loading" id="card-clock-loading" src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/loading.gif" style="height: 120px; width: 100%;" data-ll-status="loading"/></div></div></div></div></div>';
+    console.log('已挂载butterfly_clock_anzhiyu')
+    if(parent_div_git) {
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var qweather_key = '7bd1e4a9bdd94fc7b7dc4f1c15d2b8ea';
+  var gaud_map_key = '8549f8de579a5917d4c776a98bc1087d';
+  var baidu_ak_key = 'undefined';
+  var flag = 0;
+  var clock_rectangle = '112.982279,28.19409';
+  var clock_default_rectangle_enable = 'false';
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  </script><script src="https://widget.qweather.net/simple/static/js/he-simple-common.js?v=2.0"></script><script data-pjax src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.js"></script><!-- hexo injector body_end end --></body></html>
