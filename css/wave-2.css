@@ -1,0 +1,170 @@
+<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>/* ============================================================
+   波浪主题 · 第二批：动势与交互（在 wave.css 基础上追加）
+   —— 首屏入场、滚动揭示、自定义光标、接单收尾区
+   ============================================================ */
+
+/* 1. Hero 入场：标题/副标题/按钮依次浮现 */
+#page-header.full_page #site-info > * {
+  animation: heroIn .9s cubic-bezier(.2, .8, .2, 1) both;
+}
+#page-header.full_page #site-info > *:nth-child(1) { animation-delay: .12s; }
+#page-header.full_page #site-info > *:nth-child(2) { animation-delay: .30s; }
+#page-header.full_page #site-info > *:nth-child(3) { animation-delay: .48s; }
+#page-header.full_page .wave-cta { animation: heroIn .9s cubic-bezier(.2,.8,.2,1) .62s both; }
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(22px) scale(.985); filter: blur(6px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+
+/* 2. 背景画缓慢推近（Ken Burns）——给静态画一点生命 */
+#page-header.full_page {
+  animation: kenburns 26s ease-in-out infinite alternate;
+  background-size: cover;
+}
+@keyframes kenburns {
+  from { background-position: 50% 42%; background-size: 102% auto; }
+  to { background-position: 50% 52%; background-size: 110% auto; }
+}
+
+/* 3. 滚动揭示 */
+.wave-reveal {
+  opacity: 0; transform: translateY(26px);
+  transition: opacity .8s cubic-bezier(.2,.8,.2,1), transform .8s cubic-bezier(.2,.8,.2,1);
+  will-change: opacity, transform;
+}
+.wave-reveal.is-in { opacity: 1; transform: none; }
+
+/* 4. 自定义光标：一圈浪沫 */
+#wave-cursor {
+  position: fixed; left: 0; top: 0; width: 26px; height: 26px;
+  margin: -13px 0 0 -13px; border-radius: 50%;
+  border: 1.4px solid rgba(175, 198, 216, .85);
+  box-shadow: 0 0 12px rgba(124, 157, 156, .45), inset 0 0 8px rgba(223, 220, 186, .35);
+  pointer-events: none; z-index: 9999; opacity: 0;
+  transition: opacity .3s ease, width .25s ease, height .25s ease, margin .25s ease, border-color .25s ease;
+  mix-blend-mode: screen;
+}
+#wave-cursor.on { opacity: 1; }
+#wave-cursor.hovering {
+  width: 44px; height: 44px; margin: -22px 0 0 -22px;
+  border-color: rgba(201, 160, 99, .95);
+}
+
+/* 5. 收尾：合作 / 接单卡 + 技术标签 */
+.wave-cta-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  padding: 1.6rem 1.5rem;
+  background: linear-gradient(135deg, var(--w-deep), var(--w-main) 55%, var(--w-teal));
+  color: #F7F3E8;
+  box-shadow: 0 14px 34px rgba(16, 28, 44, .3);
+}
+.wave-cta-card::after {
+  content: "";
+  position: absolute; left: -10%; right: -10%; bottom: -46px; height: 110px;
+  background: radial-gradient(60% 100% at 50% 0%, rgba(223,220,186,.30), transparent 70%),
+              url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='60' viewBox='0 0 120 60'><g fill='none' stroke='%23DFDCBA' stroke-opacity='0.5' stroke-width='1.5'><path d='M0,60 A60,60 0 0 1 120,60'/><path d='M12,60 A48,48 0 0 1 108,60'/><path d='M24,60 A36,36 0 0 1 96,60'/><path d='M36,60 A24,24 0 0 1 84,60'/></g></svg>") repeat-x;
+  opacity: .85; pointer-events: none;
+}
+.wave-cta-card h3 {
+  margin: 0 0 .5rem; font-size: 1.25rem; color: #F7F3E8;
+  display: flex; align-items: center; gap: .5rem;
+}
+.wave-cta-card p { margin: 0 0 1rem; font-size: .9rem; line-height: 1.75; opacity: .92; max-width: 46em; }
+.wave-cta-card .row { display: flex; gap: .7rem; flex-wrap: wrap; position: relative; z-index: 2; }
+.wave-cta-card .row a {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .55rem 1.1rem; border-radius: 999px; font-size: .9rem;
+  text-decoration: none !important; color: #F7F3E8 !important;
+  border: 1px solid rgba(223, 220, 186, .5); background: rgba(247, 243, 232, .12);
+  backdrop-filter: blur(6px);
+  transition: transform .25s ease, background .25s ease, color .25s ease;
+}
+.wave-cta-card .row a:hover { transform: translateY(-3px); background: var(--w-ochre); color: #1B2A3E !important; border-color: transparent; }
+.wave-cta-card .row a.primary { background: var(--w-ochre); color: #1B2A3E !important; border-color: transparent; }
+
+.wave-tags { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .35rem; }
+.wave-tags span {
+  font-size: .78rem; padding: .26rem .7rem; border-radius: 999px;
+  border: 1px solid rgba(124, 157, 156, .45);
+  color: var(--w-main); background: rgba(124, 157, 156, .10);
+}
+[data-theme="dark"] .wave-tags span { color: var(--w-hi); border-color: rgba(175, 198, 216, .35); }
+
+/* 6. 移动端/省电：关掉重效果 */
+@media (prefers-reduced-motion: reduce) {
+  #page-header.full_page, #page-header.full_page #site-info > * { animation: none !important; }
+  .wave-reveal { opacity: 1 !important; transform: none !important; }
+  #wave-cursor { display: none; }
+}
+@media (max-width: 768px) {
+  #wave-cursor { display: none; }
+  .wave-cta-card::after { opacity: .5; }
+}
+
+
+/* ============================================================
+   第三批：首页全宽（body.wave-home）+ 对比度修整
+   ============================================================ */
+body.wave-home #aside-content { display: none !important; }
+body.wave-home #content-inner {
+  display: block !important;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 .6rem;
+}
+body.wave-home #recent-posts { width: 100% !important; }
+
+/* 卡流：全宽下多露几张 */
+body.wave-home .wave-pick { flex: 0 0 300px; }
+body.wave-home .wave-pick .cover { height: 150px; }
+
+/* 更多文章：两列 */
+body.wave-home .wave-more-grid {
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  column-gap: 1.2rem;
+}
+
+/* 接单卡：提高对比度（暗色下也要跳出来） */
+.wave-cta-card {
+  background:
+    radial-gradient(120% 90% at 8% 0%, rgba(124, 157, 156, .42), transparent 58%),
+    linear-gradient(120deg, #1B3358 0%, #2B4C77 46%, #3E6E86 78%, #4E8A8C 100%) !important;
+  border: 1px solid rgba(223, 220, 186, .22);
+}
+[data-theme="dark"] .wave-cta-card {
+  background:
+    radial-gradient(120% 90% at 8% 0%, rgba(124, 157, 156, .38), transparent 58%),
+    linear-gradient(120deg, #16283C 0%, #24406A 52%, #34637C 100%) !important;
+}
+.wave-cta-card .row a {
+  font-weight: 600;
+  box-shadow: 0 6px 18px rgba(8, 16, 28, .28);
+}
+.wave-cta-card .row a.primary { box-shadow: 0 8px 22px rgba(201, 160, 99, .38); }
+
+/* 技术栈标签：更清晰的胶囊 */
+.wave-tags span {
+  font-size: .8rem !important;
+  padding: .3rem .8rem !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(43, 76, 119, .35) !important;
+  background: rgba(43, 76, 119, .08) !important;
+  color: #2B4C77 !important;
+  white-space: nowrap;
+}
+[data-theme="dark"] .wave-tags span {
+  border-color: rgba(175, 198, 216, .38) !important;
+  background: rgba(175, 198, 216, .10) !important;
+  color: #DCE7F2 !important;
+}
+
+/* 首页小节标题更醒目 */
+body.wave-home .wave-sec-title { font-size: 1.28rem; letter-spacing: .01em; }
+body.wave-home .wave-section { padding: 1.7rem 1.6rem; }
+
+@media (max-width: 768px) {
+  body.wave-home #content-inner { padding: 0 .4rem; }
+  body.wave-home .wave-pick { flex: 0 0 84%; }
+}

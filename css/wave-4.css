@@ -1,0 +1,240 @@
+<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>/* ============================================================
+   波浪主题 · 第四批（wave-4.css）
+   ① 用「编辑式索引列表」替换横向卡流（横滑与浮世绘/电影感不搭）
+   ② 文字对比度整体提升（暗色下正文、标题、时间、描述都提亮）
+   ============================================================ */
+
+/* ---------- 1. 编辑式索引（替代横向滑动卡流）---------- */
+.wave-index { margin-top: .2rem; }
+.wave-index-row {
+  display: grid;
+  grid-template-columns: 3.2rem 1fr auto;
+  grid-template-areas: "num title date" "num desc date";
+  gap: .15rem .9rem;
+  align-items: baseline;
+  padding: .85rem .6rem .85rem .2rem;
+  border-top: 1px solid rgba(175, 198, 216, .14);
+  text-decoration: none !important;
+  position: relative;
+  transition: background .35s cubic-bezier(.22, .8, .28, 1), padding-left .35s cubic-bezier(.22, .8, .28, 1);
+}
+.wave-index-row:last-child { border-bottom: 1px solid rgba(175, 198, 216, .14); }
+.wave-index-row::before {
+  content: "";
+  position: absolute; left: 0; top: .55rem; bottom: .55rem; width: 2px;
+  background: linear-gradient(180deg, var(--w-ochre), var(--w-teal));
+  transform: scaleY(0); transform-origin: 50% 0;
+  transition: transform .4s cubic-bezier(.22, .8, .28, 1);
+}
+.wave-index-row:hover { background: rgba(175, 198, 216, .07); padding-left: .9rem; }
+.wave-index-row:hover::before { transform: scaleY(1); }
+
+.wave-index-row .num {
+  grid-area: num;
+  font-family: "Consolas", "Menlo", monospace;
+  font-size: .82rem; letter-spacing: .08em;
+  color: var(--w-ochre); opacity: .95;
+  padding-top: .18rem;
+}
+.wave-index-row .ti {
+  grid-area: title;
+  font-family: var(--w-serif);
+  font-size: 1.06rem; line-height: 1.5;
+  color: #F1F5FA;
+  letter-spacing: .01em;
+}
+[data-theme="light"] .wave-index-row .ti { color: #1B2A3E; }
+.wave-index-row .de {
+  grid-area: desc;
+  font-size: .84rem; line-height: 1.65;
+  color: rgba(211, 224, 238, .78);
+  display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
+}
+[data-theme="light"] .wave-index-row .de { color: rgba(43, 60, 82, .72); }
+.wave-index-row .dt {
+  grid-area: date;
+  font-family: "Consolas", "Menlo", monospace;
+  font-size: .76rem; letter-spacing: .06em;
+  color: rgba(196, 212, 228, .7);
+  white-space: nowrap;
+  padding-top: .18rem;
+}
+[data-theme="light"] .wave-index-row .dt { color: rgba(43, 60, 82, .6); }
+
+/* 旧的卡流若还在，隐藏掉（保险） */
+body.wave-home .wave-rail { display: none !important; }
+
+/* ---------- 2. 对比度提升：暗色下的正文与元信息 ---------- */
+[data-theme="dark"] {
+  --font-color: #E9EFF6;
+  --card-bg: #182B3E;
+  --btn-bg: #24405F;
+  --btn-hover-color: #C9A063;
+  --border-color: rgba(175, 198, 216, .18);
+}
+[data-theme="dark"] body,
+[data-theme="dark"] #article-container,
+[data-theme="dark"] #article-container p,
+[data-theme="dark"] .post-content,
+[data-theme="dark"] #aside-content .card-widget,
+[data-theme="dark"] .card-info .author-info__name,
+[data-theme="dark"] .card-info .author-info__description {
+  color: #E9EFF6 !important;
+}
+/* 时间、分类、标签、浏览数这类"元信息"原来太暗 */
+[data-theme="dark"] time,
+[data-theme="dark"] .article-meta-wrap,
+[data-theme="dark"] .post-meta-date,
+[data-theme="dark"] .post-meta-label,
+[data-theme="dark"] .article-meta-label,
+[data-theme="dark"] .article-meta-separator,
+[data-theme="dark"] .post-meta-categories,
+[data-theme="dark"] .post-meta-tags,
+[data-theme="dark"] #busuanzi_container_page_pv,
+[data-theme="dark"] .card-archives .card-archive-list-link,
+[data-theme="dark"] .card-categories .card-category-list-link,
+[data-theme="dark"] .aside-list-item .content time {
+  color: #B7C8DA !important;
+  opacity: 1 !important;
+}
+/* 文章标题与列表标题 */
+[data-theme="dark"] .article-title,
+[data-theme="dark"] #article-container h1,
+[data-theme="dark"] #article-container h2,
+[data-theme="dark"] #article-container h3,
+[data-theme="dark"] #article-container h4 {
+  color: #F4F8FC !important;
+}
+/* 侧栏/公告/时钟里的说明文字 */
+[data-theme="dark"] #aside-content .item-headline,
+[data-theme="dark"] .card-announcement,
+[data-theme="dark"] .card-clock-own,
+[data-theme="dark"] .card-webinfo .webinfo-item {
+  color: #E3EBF4 !important;
+}
+/* 引用块与代码 */
+[data-theme="dark"] #article-container blockquote { color: #DCE6F1 !important; }
+[data-theme="dark"] #article-container code { color: #F0D9A8 !important; }
+
+/* ---------- 3. 我自己组件里的"弱文本"也提亮 ---------- */
+.wave-section > .wave-sec-sub { opacity: .82 !important; }
+.wave-card p { opacity: .9 !important; }
+.wave-index-row .num { opacity: 1; }
+.wave-cta-card p { opacity: .98 !important; }
+.wave-tags span { font-weight: 500; }
+#page-header.full_page .cine-credits { opacity: .78; }
+#page-header.full_page .cine-en { opacity: .82; }
+
+/* 亮色模式下也让次要文字可读 */
+[data-theme="light"] .wave-card p { color: rgba(30, 45, 62, .82); }
+[data-theme="light"] .wave-section > .wave-sec-sub { color: rgba(30, 45, 62, .72); }
+
+/* ---------- 4. 文章标题前缀：自绘竖条（替换主题的图标字体）---------- */
+#article-container h2::before {
+  content: "";
+  display: inline-block;
+  width: 3px; height: .92em;
+  margin-right: .55rem;
+  vertical-align: -.06em;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--w-ochre), var(--w-teal));
+}
+[data-theme="dark"] #article-container h2 { color: #F4F8FC !important; }
+/* ---------- 6. 标题锚点图标：默认隐藏、悬停才淡出显示（原来一直亮着像乱码）---------- */
+#article-container .headerlink {
+  opacity: 0 !important;
+  margin-right: .35rem;
+  font-size: .68em;
+  transition: opacity .25s ease, transform .25s ease;
+  transform: translateY(-1px);
+}
+#article-container h2:hover .headerlink,
+#article-container h3:hover .headerlink,
+#article-container h4:hover .headerlink,
+#article-container h5:hover .headerlink { opacity: .6 !important; }
+/* h3 也给一条更细的竖条，和 h2 呼应 */
+#article-container h3::before {
+  content: "";
+  display: inline-block;
+  width: 2px; height: .8em;
+  margin-right: .45rem;
+  vertical-align: -.02em;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--w-teal), rgba(124,157,156,.4));
+}
+/* ---------- 7. 索引列表：无条件高对比（不再依赖任何动画状态）---------- */
+.wave-index-row .ti,
+.wave-index-row .ti * {
+  color: #FFFFFF !important;
+  opacity: 1 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .45);
+}
+.wave-index-row .de,
+.wave-index-row .de * {
+  color: #D7E3EF !important;
+  opacity: 1 !important;
+}
+.wave-index-row .dt { color: #C6D6E6 !important; opacity: 1 !important; }
+.wave-index-row .num { color: #E0B573 !important; opacity: 1 !important; }
+.wave-index-row, .wave-index-row * { filter: none !important; }
+.wave-index { opacity: 1 !important; }
+.wave-section, .wave-card, .wave-cta-card, .wave-tags { opacity: 1 !important; }
+/* 兜底：任何 reveal 元素最多 1.2 秒内必须完全可见（JS 也会补，见 wave.js） */
+.wave-reveal { opacity: 1 !important; }
+/* ---------- 8. 高清画层：移动端用小图 + 轻微提亮（抵消电影调压暗）---------- */
+#page-header.full_page .wave-art,
+#page-header.full_page {
+  --wave-hd-filter: brightness(1.13) saturate(1.05) contrast(1.02);
+}
+#page-header.full_page .wave-art { filter: var(--wave-hd-filter); }
+/* 主题自带的那层遮罩在首页略减弱，让原作米色天空透出来 */
+#page-header.full_page::after { opacity: .82 !important; }
+@media (max-width: 768px) {
+  /* 手机只加载 248KB 的小图，而不是 851KB 的大图 */
+  #page-header.full_page,
+  #page-header.full_page .wave-art { background-image: url("/img/wave-hd-mobile.jpg") !important; }
+  #page-header.post-bg { background-image: url("/img/wave-hd-mobile.jpg") !important; }
+}
+
+/* ---------- 9. 手机端首屏排版（英文副题原本会溢出，用与基础规则同级的 !important 覆盖）---------- */
+@media (max-width: 768px) {
+  #page-header .cine-en {
+    font-size: .56rem !important;
+    letter-spacing: .09em !important;
+    white-space: normal !important;
+    max-width: 92vw;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+    opacity: .9 !important;
+  }
+  #page-header #site-title, #page-header .site-name {
+    font-size: clamp(1.7rem, 8.4vw, 2.4rem) !important;
+    letter-spacing: .03em !important;
+    line-height: 1.25;
+  }
+  #page-header .cine-credits { font-size: .56rem !important; letter-spacing: .05em !important; line-height: 2; }
+  #page-header .cine-credits span { margin-right: .3rem; }
+  #page-header .wave-cta { flex-wrap: wrap !important; gap: .5rem !important; justify-content: center !important; }
+  #page-header .wave-cta .btn, #page-header .wave-cta a { font-size: .78rem !important; padding: .48rem .8rem !important; }
+  #page-header #site-info { max-width: 94vw; margin-left: auto; margin-right: auto; }
+  #page-header.full_page { overflow-x: hidden; }
+}
+
+
+/* ---------- 10. 手机端：强制给容器一个窄宽度，逼它换行（父级是 absolute+max-content，光靠 flex-wrap 不管用）---------- */
+@media (max-width: 768px) {
+  #page-header .wave-cta,
+  #page-header .cine-credits,
+  #page-header .cine-en,
+  #page-header #site-subtitle {
+    width: 92vw !important;
+    max-width: 92vw !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box;
+  }
+  #page-header .wave-cta { gap: .5rem !important; }
+  #page-header .wave-cta a { flex: 0 1 auto; }
+  #page-header .cine-credits { margin-top: .9rem !important; }
+  #page-header #site-info, #page-header .full_page #site-info { width: 100% !important; max-width: 100% !important; padding: 0 3vw; }
+}

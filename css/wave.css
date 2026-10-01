@@ -1,0 +1,327 @@
+<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>/* ============================================================
+   波浪主题前端层（wave.css）
+   目标：耳目一新的首页冲击感 + 统一设计系统（取自神奈川冲浪里的色）
+   可整体关闭：注释掉 _config.butterfly.yml 里对应的 inject 行即可
+   ============================================================ */
+
+:root {
+  --w-deep: #223C66;      /* 深海 */
+  --w-main: #2B4C77;      /* 浪身主蓝（主色） */
+  --w-mid: #496C8D;
+  --w-teal: #7C9D9C;      /* 青灰绿（强调） */
+  --w-cream: #DFDCBA;     /* 宣纸米 */
+  --w-ochre: #C9A063;     /* 船体赭黄（点睛） */
+  --w-ink: #16283C;       /* 墨蓝 */
+  --w-hi: #AFC6D8;        /* 浪尖高光 */
+  --w-paper: #F7F3E8;     /* 亮色底（宣纸） */
+}
+
+/* 亮色模式下页面底换成宣纸色 */
+:root {
+  --card-bg: #FFFDF7;
+}
+[data-theme="dark"] {
+  --card-bg: #16283C;
+}
+
+/* ---------- 1. 首页 Hero：画布铺在大图上，文字浮在上层 ---------- */
+#page-header.full_page #wave-hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  mix-blend-mode: soft-light;   /* 与他的画融合，不抢原图 */
+  opacity: 0.95;
+  pointer-events: none;
+}
+#page-header.full_page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(120% 80% at 50% 20%, rgba(34, 60, 102, 0) 35%, rgba(22, 40, 60, 0.55) 100%),
+    linear-gradient(180deg, rgba(22, 40, 60, 0.45) 0%, rgba(22, 40, 60, 0.05) 40%, rgba(22, 40, 60, 0.65) 100%);
+  pointer-events: none;
+}
+#page-header.full_page #site-info { z-index: 3; }
+
+/* Hero 里的行动按钮 */
+.wave-cta {
+  margin-top: 1.6rem;
+  display: flex;
+  gap: 0.85rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  z-index: 4;
+  position: relative;
+}
+.wave-cta a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.62rem 1.25rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  text-decoration: none !important;
+  backdrop-filter: blur(8px);
+  transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+  border: 1px solid rgba(223, 220, 186, 0.45);
+  color: #F7F3E8 !important;
+  background: rgba(34, 60, 102, 0.35);
+  box-shadow: 0 6px 20px rgba(16, 28, 44, 0.28);
+}
+.wave-cta a:hover {
+  transform: translateY(-3px);
+  background: rgba(201, 160, 99, 0.85);
+  color: #1B2A3E !important;
+  box-shadow: 0 12px 28px rgba(16, 28, 44, 0.35);
+}
+.wave-cta a.primary {
+  background: rgba(201, 160, 99, 0.92);
+  color: #1B2A3E !important;
+  border-color: transparent;
+}
+
+/* 向下滚动提示：一道小浪 */
+.wave-scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  z-index: 4;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 1.6px solid rgba(247, 243, 232, 0.6);
+  animation: waveCue 2.4s ease-in-out infinite;
+}
+.wave-scroll-cue::after {
+  content: "";
+  position: absolute; left: 50%; top: 7px;
+  width: 8px; height: 8px; margin-left: -4px;
+  border-right: 1.6px solid rgba(247, 243, 232, 0.85);
+  border-bottom: 1.6px solid rgba(247, 243, 232, 0.85);
+  transform: rotate(45deg);
+}
+@keyframes waveCue {
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity: .9; }
+  50% { transform: translateX(-50%) translateY(8px); opacity: .5; }
+}
+
+/* ---------- 2. 首页正文：编辑式段落 ---------- */
+.wave-section {
+  position: relative;
+  margin: 0 auto 1.5rem;
+  padding: 1.6rem 1.5rem;
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: 0 8px 28px rgba(34, 60, 102, 0.10);
+  overflow: hidden;
+}
+[data-theme="dark"] .wave-section { box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35); }
+
+.wave-section > .wave-sec-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--w-main);
+  margin-bottom: 0.35rem;
+}
+[data-theme="dark"] .wave-section > .wave-sec-title { color: var(--w-hi); }
+.wave-section > .wave-sec-sub {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  margin-bottom: 1.1rem;
+}
+
+/* 青海波分隔线（纯 CSS，无外链） */
+.wave-divider {
+  height: 42px;
+  margin: 0.2rem 0 1.2rem;
+  background-repeat: repeat-x;
+  background-size: 60px 42px;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='42' viewBox='0 0 60 42'><g fill='none' stroke='%232B4C77' stroke-opacity='0.75' stroke-width='1.4'><path d='M0,42 A30,30 0 0 1 60,42'/><path d='M6,42 A24,24 0 0 1 54,42'/><path d='M12,42 A18,18 0 0 1 48,42'/><path d='M18,42 A12,12 0 0 1 42,42'/><path d='M30,42 A30,30 0 0 1 90,42'/><path d='M-30,42 A30,30 0 0 1 30,42'/></g></svg>");
+}
+[data-theme="dark"] .wave-divider { filter: brightness(1.6) saturate(0.9); }
+
+/* 三件事卡片 */
+.wave-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1rem;
+}
+.wave-card {
+  position: relative;
+  padding: 1.15rem 1.1rem;
+  border-radius: 14px;
+  background: linear-gradient(160deg, rgba(43, 76, 119, 0.06), rgba(124, 157, 156, 0.05));
+  border: 1px solid rgba(43, 76, 119, 0.12);
+  transition: transform .3s cubic-bezier(.2, .8, .2, 1), box-shadow .3s ease, border-color .3s ease;
+}
+[data-theme="dark"] .wave-card {
+  background: linear-gradient(160deg, rgba(175, 198, 216, 0.07), rgba(124, 157, 156, 0.05));
+  border-color: rgba(175, 198, 216, 0.14);
+}
+.wave-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(201, 160, 99, 0.55);
+  box-shadow: 0 14px 30px rgba(34, 60, 102, 0.16);
+}
+.wave-card h3 {
+  font-size: 1rem;
+  margin: 0 0 .45rem;
+  display: flex; align-items: center; gap: .45rem;
+  color: var(--w-main);
+}
+[data-theme="dark"] .wave-card h3 { color: var(--w-hi); }
+.wave-card p { font-size: .86rem; line-height: 1.7; opacity: .85; margin: 0; }
+
+/* 精选文章：横向卡流 */
+.wave-rail {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding: .35rem .2rem 1rem;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+}
+.wave-rail::-webkit-scrollbar { height: 6px; }
+.wave-rail::-webkit-scrollbar-thumb { background: rgba(124, 157, 156, .6); border-radius: 3px; }
+.wave-pick {
+  flex: 0 0 268px;
+  scroll-snap-align: start;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--card-bg);
+  border: 1px solid rgba(43, 76, 119, .12);
+  text-decoration: none !important;
+  transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease;
+  display: flex; flex-direction: column;
+}
+[data-theme="dark"] .wave-pick { border-color: rgba(175, 198, 216, .14); }
+.wave-pick:hover { transform: translateY(-5px); box-shadow: 0 16px 32px rgba(34, 60, 102, .22); }
+.wave-pick .cover { height: 132px; background-size: cover; background-position: center; }
+.wave-pick .body { padding: .8rem .9rem 1rem; display: flex; flex-direction: column; gap: .35rem; }
+.wave-pick .t {
+  font-size: .95rem; font-weight: 600; line-height: 1.5;
+  color: var(--font-color, #2b2b2b);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.wave-pick .m { font-size: .74rem; opacity: .6; }
+.wave-pick .d {
+  font-size: .8rem; line-height: 1.65; opacity: .78;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+/* hover 时底部涌起一道浪 */
+.wave-pick::after {
+  content: ""; display: block; height: 6px; margin-top: auto;
+  background: linear-gradient(90deg, transparent, var(--w-teal), var(--w-ochre), transparent);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .45s cubic-bezier(.2,.8,.2,1);
+}
+.wave-pick:hover::after { transform: scaleX(1); }
+
+/* 隐藏主题原始文章列表（内容已搬到 rail + 折叠区） */
+.wave-hidden-list { display: none !important; }
+
+/* 折叠：更多文章 */
+.wave-more {
+  margin-top: .4rem;
+  border-top: 1px dashed rgba(124, 157, 156, .45);
+  padding-top: .9rem;
+}
+.wave-more > summary {
+  cursor: pointer; font-size: .9rem; font-weight: 600;
+  color: var(--w-main); list-style: none;
+}
+[data-theme="dark"] .wave-more > summary { color: var(--w-hi); }
+.wave-more > summary::-webkit-details-marker { display: none; }
+.wave-more-grid { margin-top: .8rem; display: grid; gap: .5rem; }
+.wave-more-grid a {
+  display: flex; align-items: baseline; gap: .7rem;
+  font-size: .88rem; padding: .35rem .2rem;
+  text-decoration: none !important; border-radius: 8px;
+  transition: background .2s ease, padding-left .2s ease;
+}
+.wave-more-grid a:hover { background: rgba(124, 157, 156, .12); padding-left: .6rem; }
+.wave-more-grid time { font-size: .76rem; opacity: .55; flex: 0 0 auto; }
+
+/* ---------- 3. 阅读进度：浪线 ---------- */
+#wave-progress {
+  position: fixed; left: 0; top: 0; height: 3px; width: 100%;
+  transform-origin: 0 50%; transform: scaleX(0);
+  background: linear-gradient(90deg, var(--w-main), var(--w-teal) 45%, var(--w-cream) 75%, var(--w-ochre));
+  z-index: 9998; pointer-events: none;
+  box-shadow: 0 0 10px rgba(124, 157, 156, .5);
+}
+
+/* ---------- 4. 点击涟漪 ---------- */
+.wave-ripple {
+  position: fixed; width: 12px; height: 12px; border-radius: 50%;
+  border: 1.6px solid rgba(175, 198, 216, .9);
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%) scale(0);
+  animation: waveRipple .62s cubic-bezier(.2,.7,.3,1) forwards;
+}
+@keyframes waveRipple {
+  0% { transform: translate(-50%,-50%) scale(0); opacity: .95; }
+  100% { transform: translate(-50%,-50%) scale(9); opacity: 0; }
+}
+
+/* ---------- 5. 页面过渡（View Transitions） ---------- */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: waveOut .42s cubic-bezier(.4,0,.6,1) both; }
+::view-transition-new(root) { animation: waveIn .46s cubic-bezier(.4,0,.6,1) both; }
+@keyframes waveOut { to { opacity: 0; transform: translateY(-14px) scale(.995); } }
+@keyframes waveIn { from { opacity: 0; transform: translateY(16px) scale(.995); } }
+
+/* ---------- 6. 卡片与代码：细节打磨 ---------- */
+#recent-posts .recent-post-item,
+.card-widget, .post-block {
+  border-radius: 14px !important;
+}
+#recent-posts .recent-post-item {
+  transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease;
+}
+#recent-posts .recent-post-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 34px rgba(34, 60, 102, .16);
+}
+figure.highlight, .code-area, pre {
+  border-radius: 12px !important;
+}
+/* 文章首字下沉（编辑感） */
+#article-container > p:first-of-type::first-letter {
+  float: left; font-size: 3.1em; line-height: .86;
+  padding: .06em .12em 0 0; font-weight: 700;
+  color: var(--w-main);
+}
+[data-theme="dark"] #article-container > p:first-of-type::first-letter { color: var(--w-hi); }
+
+/* 导航栏：滚动时毛玻璃 */
+#nav.show, #page-header.nav-fixed #nav {
+  backdrop-filter: blur(12px) saturate(1.25);
+  background: rgba(247, 243, 232, .78) !important;
+}
+[data-theme="dark"] #nav.show, [data-theme="dark"] #page-header.nav-fixed #nav {
+  background: rgba(14, 26, 41, .78) !important;
+}
+
+/* ---------- 7. 尊重"减少动态效果" ---------- */
+@media (prefers-reduced-motion: reduce) {
+  #wave-hero-canvas, .wave-scroll-cue, .wave-pick::after { display: none !important; }
+  .wave-ripple { display: none; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+}
+/* 移动端：关掉画布，省电 */
+@media (max-width: 768px) {
+  #wave-hero-canvas { display: none; }
+  .wave-pick { flex: 0 0 82%; }
+}

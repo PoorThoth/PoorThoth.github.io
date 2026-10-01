@@ -207,7 +207,1066 @@
   isHighlightShrink: false,
   isToc: false,
   pageType: 'page'
-}</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+}</script><meta name="generator" content="Hexo 6.3.0"><style id="wave-css">/* ============================================================
+   波浪主题 · 第二批：动势与交互（在 wave.css 基础上追加）
+   —— 首屏入场、滚动揭示、自定义光标、接单收尾区
+   ============================================================ */
+
+/* 1. Hero 入场：标题/副标题/按钮依次浮现 */
+#page-header.full_page #site-info > * {
+  animation: heroIn .9s cubic-bezier(.2, .8, .2, 1) both;
+}
+#page-header.full_page #site-info > *:nth-child(1) { animation-delay: .12s; }
+#page-header.full_page #site-info > *:nth-child(2) { animation-delay: .30s; }
+#page-header.full_page #site-info > *:nth-child(3) { animation-delay: .48s; }
+#page-header.full_page .wave-cta { animation: heroIn .9s cubic-bezier(.2,.8,.2,1) .62s both; }
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(22px) scale(.985); filter: blur(6px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+
+/* 2. 背景画缓慢推近（Ken Burns）——给静态画一点生命 */
+#page-header.full_page {
+  animation: kenburns 26s ease-in-out infinite alternate;
+  background-size: cover;
+}
+@keyframes kenburns {
+  from { background-position: 50% 42%; background-size: 102% auto; }
+  to { background-position: 50% 52%; background-size: 110% auto; }
+}
+
+/* 3. 滚动揭示 */
+.wave-reveal {
+  opacity: 0; transform: translateY(26px);
+  transition: opacity .8s cubic-bezier(.2,.8,.2,1), transform .8s cubic-bezier(.2,.8,.2,1);
+  will-change: opacity, transform;
+}
+.wave-reveal.is-in { opacity: 1; transform: none; }
+
+/* 4. 自定义光标：一圈浪沫 */
+#wave-cursor {
+  position: fixed; left: 0; top: 0; width: 26px; height: 26px;
+  margin: -13px 0 0 -13px; border-radius: 50%;
+  border: 1.4px solid rgba(175, 198, 216, .85);
+  box-shadow: 0 0 12px rgba(124, 157, 156, .45), inset 0 0 8px rgba(223, 220, 186, .35);
+  pointer-events: none; z-index: 9999; opacity: 0;
+  transition: opacity .3s ease, width .25s ease, height .25s ease, margin .25s ease, border-color .25s ease;
+  mix-blend-mode: screen;
+}
+#wave-cursor.on { opacity: 1; }
+#wave-cursor.hovering {
+  width: 44px; height: 44px; margin: -22px 0 0 -22px;
+  border-color: rgba(201, 160, 99, .95);
+}
+
+/* 5. 收尾：合作 / 接单卡 + 技术标签 */
+.wave-cta-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  padding: 1.6rem 1.5rem;
+  background: linear-gradient(135deg, var(--w-deep), var(--w-main) 55%, var(--w-teal));
+  color: #F7F3E8;
+  box-shadow: 0 14px 34px rgba(16, 28, 44, .3);
+}
+.wave-cta-card::after {
+  content: "";
+  position: absolute; left: -10%; right: -10%; bottom: -46px; height: 110px;
+  background: radial-gradient(60% 100% at 50% 0%, rgba(223,220,186,.30), transparent 70%),
+              url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='60' viewBox='0 0 120 60'><g fill='none' stroke='%23DFDCBA' stroke-opacity='0.5' stroke-width='1.5'><path d='M0,60 A60,60 0 0 1 120,60'/><path d='M12,60 A48,48 0 0 1 108,60'/><path d='M24,60 A36,36 0 0 1 96,60'/><path d='M36,60 A24,24 0 0 1 84,60'/></g></svg>") repeat-x;
+  opacity: .85; pointer-events: none;
+}
+.wave-cta-card h3 {
+  margin: 0 0 .5rem; font-size: 1.25rem; color: #F7F3E8;
+  display: flex; align-items: center; gap: .5rem;
+}
+.wave-cta-card p { margin: 0 0 1rem; font-size: .9rem; line-height: 1.75; opacity: .92; max-width: 46em; }
+.wave-cta-card .row { display: flex; gap: .7rem; flex-wrap: wrap; position: relative; z-index: 2; }
+.wave-cta-card .row a {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .55rem 1.1rem; border-radius: 999px; font-size: .9rem;
+  text-decoration: none !important; color: #F7F3E8 !important;
+  border: 1px solid rgba(223, 220, 186, .5); background: rgba(247, 243, 232, .12);
+  backdrop-filter: blur(6px);
+  transition: transform .25s ease, background .25s ease, color .25s ease;
+}
+.wave-cta-card .row a:hover { transform: translateY(-3px); background: var(--w-ochre); color: #1B2A3E !important; border-color: transparent; }
+.wave-cta-card .row a.primary { background: var(--w-ochre); color: #1B2A3E !important; border-color: transparent; }
+
+.wave-tags { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .35rem; }
+.wave-tags span {
+  font-size: .78rem; padding: .26rem .7rem; border-radius: 999px;
+  border: 1px solid rgba(124, 157, 156, .45);
+  color: var(--w-main); background: rgba(124, 157, 156, .10);
+}
+[data-theme="dark"] .wave-tags span { color: var(--w-hi); border-color: rgba(175, 198, 216, .35); }
+
+/* 6. 移动端/省电：关掉重效果 */
+@media (prefers-reduced-motion: reduce) {
+  #page-header.full_page, #page-header.full_page #site-info > * { animation: none !important; }
+  .wave-reveal { opacity: 1 !important; transform: none !important; }
+  #wave-cursor { display: none; }
+}
+@media (max-width: 768px) {
+  #wave-cursor { display: none; }
+  .wave-cta-card::after { opacity: .5; }
+}
+
+
+/* ============================================================
+   第三批：首页全宽（body.wave-home）+ 对比度修整
+   ============================================================ */
+body.wave-home #aside-content { display: none !important; }
+body.wave-home #content-inner {
+  display: block !important;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 .6rem;
+}
+body.wave-home #recent-posts { width: 100% !important; }
+
+/* 卡流：全宽下多露几张 */
+body.wave-home .wave-pick { flex: 0 0 300px; }
+body.wave-home .wave-pick .cover { height: 150px; }
+
+/* 更多文章：两列 */
+body.wave-home .wave-more-grid {
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  column-gap: 1.2rem;
+}
+
+/* 接单卡：提高对比度（暗色下也要跳出来） */
+.wave-cta-card {
+  background:
+    radial-gradient(120% 90% at 8% 0%, rgba(124, 157, 156, .42), transparent 58%),
+    linear-gradient(120deg, #1B3358 0%, #2B4C77 46%, #3E6E86 78%, #4E8A8C 100%) !important;
+  border: 1px solid rgba(223, 220, 186, .22);
+}
+[data-theme="dark"] .wave-cta-card {
+  background:
+    radial-gradient(120% 90% at 8% 0%, rgba(124, 157, 156, .38), transparent 58%),
+    linear-gradient(120deg, #16283C 0%, #24406A 52%, #34637C 100%) !important;
+}
+.wave-cta-card .row a {
+  font-weight: 600;
+  box-shadow: 0 6px 18px rgba(8, 16, 28, .28);
+}
+.wave-cta-card .row a.primary { box-shadow: 0 8px 22px rgba(201, 160, 99, .38); }
+
+/* 技术栈标签：更清晰的胶囊 */
+.wave-tags span {
+  font-size: .8rem !important;
+  padding: .3rem .8rem !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(43, 76, 119, .35) !important;
+  background: rgba(43, 76, 119, .08) !important;
+  color: #2B4C77 !important;
+  white-space: nowrap;
+}
+[data-theme="dark"] .wave-tags span {
+  border-color: rgba(175, 198, 216, .38) !important;
+  background: rgba(175, 198, 216, .10) !important;
+  color: #DCE7F2 !important;
+}
+
+/* 首页小节标题更醒目 */
+body.wave-home .wave-sec-title { font-size: 1.28rem; letter-spacing: .01em; }
+body.wave-home .wave-section { padding: 1.7rem 1.6rem; }
+
+@media (max-width: 768px) {
+  body.wave-home #content-inner { padding: 0 .4rem; }
+  body.wave-home .wave-pick { flex: 0 0 84%; }
+}
+
+/* ============================================================
+   波浪主题 · 电影感层（wave-3.css）
+   目标：宽银幕构图 / 强对比 / 胶片颗粒 / 渐变暗角 / 章节化排版 / 慢速重量感动效
+   ============================================================ */
+
+/* ---------- 0. 基础调色：更深的夜海，更强的对比 ---------- */
+:root {
+  --cine-bg: #12202F;
+  --cine-card: #182B3E;
+  --cine-line: rgba(175, 198, 216, .22);
+  --cine-text: #F3EEE1;
+  --cine-accent: #C9A063;
+}
+body.wave-home { background: var(--cine-bg); }
+[data-theme="dark"] body { background: var(--cine-bg); }
+[data-theme="dark"] .card-widget,
+[data-theme="dark"] #recent-posts .recent-post-item,
+[data-theme="dark"] .post-block {
+  background: var(--cine-card) !important;
+  border: 1px solid var(--cine-line) !important;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, .26) !important;
+}
+
+/* ---------- 1. 胶片颗粒 + 暗角（全站） ---------- */
+body::after {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  z-index: 9997;
+  pointer-events: none;
+  opacity: .032;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
+  animation: grain 1.1s steps(4) infinite;
+}
+@keyframes grain {
+  0%   { transform: translate3d(0, 0, 0); }
+  25%  { transform: translate3d(-3%, 2%, 0); }
+  50%  { transform: translate3d(2%, -3%, 0); }
+  75%  { transform: translate3d(-2%, -2%, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9996;
+  pointer-events: none;
+  background: radial-gradient(130% 100% at 50% 42%, transparent 66%, rgba(4, 10, 18, .26) 100%);
+  mix-blend-mode: multiply;
+}
+[data-theme="light"] body::after { opacity: .035; }
+
+/* ---------- 2. 宽银幕：hero 加黑边 + 滚动视差 ---------- */
+#page-header.full_page {
+  position: relative;
+  overflow: hidden;
+}
+#page-header.full_page .wave-art {
+  position: absolute;
+  inset: -6% -2% -6% -2%;
+  background-size: cover;
+  background-position: center 45%;
+  z-index: 0;
+  will-change: transform;
+  transform-origin: 50% 40%;
+}
+#page-header.full_page #wave-hero-canvas {
+  inset: -6% -2% -6% -2%;
+  width: 104% !important;
+  height: 112% !important;
+  z-index: 1;
+}
+#page-header.full_page .cine-bar {
+  position: absolute;
+  left: 0; right: 0; height: 7.5vh;
+  background: linear-gradient(180deg, #05090F 0%, rgba(5, 9, 15, .0) 100%);
+  z-index: 5;
+  pointer-events: none;
+}
+#page-header.full_page .cine-bar.top { top: 0; }
+#page-header.full_page .cine-bar.bottom {
+  bottom: 0;
+  background: linear-gradient(0deg, #05090F 0%, rgba(5, 9, 15, .0) 100%);
+}
+
+/* 主标题：电影片头感 */
+#page-header.full_page #site-title {
+  font-size: clamp(2.4rem, 5.2vw, 4.2rem) !important;
+  letter-spacing: .06em;
+  font-weight: 700;
+  text-shadow: 0 6px 34px rgba(4, 10, 18, .85), 0 1px 0 rgba(237, 231, 214, .18);
+}
+#page-header.full_page .cine-en {
+  display: block;
+  margin-top: .5rem;
+  font-size: clamp(.72rem, 1.15vw, .95rem);
+  letter-spacing: .42em;
+  text-transform: uppercase;
+  opacity: .72;
+  font-weight: 400;
+}
+/* 片尾字幕式的信息行 */
+#page-header.full_page .cine-credits {
+  margin-top: 1.15rem;
+  display: flex;
+  gap: 1.1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-size: .74rem;
+  letter-spacing: .16em;
+  opacity: .62;
+  text-transform: uppercase;
+}
+#page-header.full_page .cine-credits span::before {
+  content: "—";
+  margin-right: .5rem;
+  opacity: .5;
+}
+
+/* ---------- 3. 章节化板块标题 ---------- */
+body.wave-home .wave-sec-title {
+  font-size: clamp(1.15rem, 1.7vw, 1.5rem) !important;
+  letter-spacing: .04em;
+}
+body.wave-home .wave-sec-title .chap {
+  font-family: "Consolas", "Menlo", monospace;
+  font-size: .82em;
+  letter-spacing: .12em;
+  color: var(--cine-accent);
+  opacity: .95;
+}
+body.wave-home .wave-sec-sub {
+  letter-spacing: .02em;
+  opacity: .62;
+}
+body.wave-home .wave-section {
+  background: linear-gradient(180deg, rgba(28, 47, 68, .97), rgba(19, 33, 49, .97)) !important;
+  border: 1px solid var(--cine-line);
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .24);
+}
+
+/* ---------- 4. 卡片：玻璃 + 缓慢光扫 ---------- */
+.wave-card, .wave-pick {
+  background: linear-gradient(180deg, rgba(30, 50, 72, .95), rgba(20, 36, 54, .95)) !important;
+  border: 1px solid var(--cine-line) !important;
+  position: relative;
+  overflow: hidden;
+}
+.wave-card::before, .wave-pick::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent 38%, rgba(237, 231, 214, .10) 48%, transparent 58%);
+  transform: translateX(-120%);
+  transition: transform 1.05s cubic-bezier(.16, 1, .3, 1);
+  pointer-events: none;
+}
+.wave-card:hover::before, .wave-pick:hover::before { transform: translateX(120%); }
+.wave-card:hover, .wave-pick:hover {
+  border-color: rgba(201, 160, 99, .5) !important;
+  transform: translateY(-5px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, .3);
+}
+.wave-card h3 { letter-spacing: .03em; }
+.wave-pick .t { letter-spacing: .01em; }
+.wave-pick .cover { filter: saturate(.92) contrast(1.06); }
+
+/* ---------- 5. 揭示动画：遮帘式（比淡入更有电影感） ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .wave-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: inset(0 0 4% 0);
+    filter: saturate(.96);
+    transition: clip-path .68s cubic-bezier(.22, .8, .28, 1),
+                filter .68s cubic-bezier(.22, .8, .28, 1),
+                transform .68s cubic-bezier(.22, .8, .28, 1);
+  }
+  .wave-reveal.is-in { clip-path: inset(0 0 0 0); filter: none; }
+}
+
+/* ---------- 6. 接单卡：更强的"预告片"质感 ---------- */
+.wave-cta-card {
+  border-radius: 18px !important;
+  padding: 2.1rem 1.9rem !important;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, .32);
+}
+.wave-cta-card h3 {
+  font-size: clamp(1.4rem, 2.4vw, 2rem) !important;
+  letter-spacing: .05em;
+}
+.wave-cta-card p { font-size: .95rem !important; line-height: 1.85 !important; }
+
+/* ---------- 7. 进度条更细更"胶片" ---------- */
+#wave-progress {
+  height: 2px !important;
+  box-shadow: 0 0 14px rgba(201, 160, 99, .55);
+}
+
+/* ---------- 8. 排版：正文更有"印刷感" ---------- */
+#article-container { letter-spacing: .012em; }
+#article-container h2 {
+  letter-spacing: .03em;
+  padding-left: .1em;
+}
+:root { --w-serif: "Source Han Serif SC", "Noto Serif SC", "Songti SC", "SimSun", "Georgia", serif; }
+#page-header.full_page #site-title,
+body.wave-home .wave-sec-title,
+.wave-cta-card h3 {
+  font-family: var(--w-serif);
+}
+
+/* ---------- 9. 移动端/省电降级 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  body::after { animation: none; }
+  #page-header.full_page .wave-art { transform: none !important; }
+}
+@media (max-width: 768px) {
+  #page-header.full_page .cine-bar { height: 5vh; }
+  body::after { opacity: .03; }
+}
+
+/* 滚动更顺 */
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* ============================================================
+   波浪主题 · 第四批（wave-4.css）
+   ① 用「编辑式索引列表」替换横向卡流（横滑与浮世绘/电影感不搭）
+   ② 文字对比度整体提升（暗色下正文、标题、时间、描述都提亮）
+   ============================================================ */
+
+/* ---------- 1. 编辑式索引（替代横向滑动卡流）---------- */
+.wave-index { margin-top: .2rem; }
+.wave-index-row {
+  display: grid;
+  grid-template-columns: 3.2rem 1fr auto;
+  grid-template-areas: "num title date" "num desc date";
+  gap: .15rem .9rem;
+  align-items: baseline;
+  padding: .85rem .6rem .85rem .2rem;
+  border-top: 1px solid rgba(175, 198, 216, .14);
+  text-decoration: none !important;
+  position: relative;
+  transition: background .35s cubic-bezier(.22, .8, .28, 1), padding-left .35s cubic-bezier(.22, .8, .28, 1);
+}
+.wave-index-row:last-child { border-bottom: 1px solid rgba(175, 198, 216, .14); }
+.wave-index-row::before {
+  content: "";
+  position: absolute; left: 0; top: .55rem; bottom: .55rem; width: 2px;
+  background: linear-gradient(180deg, var(--w-ochre), var(--w-teal));
+  transform: scaleY(0); transform-origin: 50% 0;
+  transition: transform .4s cubic-bezier(.22, .8, .28, 1);
+}
+.wave-index-row:hover { background: rgba(175, 198, 216, .07); padding-left: .9rem; }
+.wave-index-row:hover::before { transform: scaleY(1); }
+
+.wave-index-row .num {
+  grid-area: num;
+  font-family: "Consolas", "Menlo", monospace;
+  font-size: .82rem; letter-spacing: .08em;
+  color: var(--w-ochre); opacity: .95;
+  padding-top: .18rem;
+}
+.wave-index-row .ti {
+  grid-area: title;
+  font-family: var(--w-serif);
+  font-size: 1.06rem; line-height: 1.5;
+  color: #F1F5FA;
+  letter-spacing: .01em;
+}
+[data-theme="light"] .wave-index-row .ti { color: #1B2A3E; }
+.wave-index-row .de {
+  grid-area: desc;
+  font-size: .84rem; line-height: 1.65;
+  color: rgba(211, 224, 238, .78);
+  display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
+}
+[data-theme="light"] .wave-index-row .de { color: rgba(43, 60, 82, .72); }
+.wave-index-row .dt {
+  grid-area: date;
+  font-family: "Consolas", "Menlo", monospace;
+  font-size: .76rem; letter-spacing: .06em;
+  color: rgba(196, 212, 228, .7);
+  white-space: nowrap;
+  padding-top: .18rem;
+}
+[data-theme="light"] .wave-index-row .dt { color: rgba(43, 60, 82, .6); }
+
+/* 旧的卡流若还在，隐藏掉（保险） */
+body.wave-home .wave-rail { display: none !important; }
+
+/* ---------- 2. 对比度提升：暗色下的正文与元信息 ---------- */
+[data-theme="dark"] {
+  --font-color: #E9EFF6;
+  --card-bg: #182B3E;
+  --btn-bg: #24405F;
+  --btn-hover-color: #C9A063;
+  --border-color: rgba(175, 198, 216, .18);
+}
+[data-theme="dark"] body,
+[data-theme="dark"] #article-container,
+[data-theme="dark"] #article-container p,
+[data-theme="dark"] .post-content,
+[data-theme="dark"] #aside-content .card-widget,
+[data-theme="dark"] .card-info .author-info__name,
+[data-theme="dark"] .card-info .author-info__description {
+  color: #E9EFF6 !important;
+}
+/* 时间、分类、标签、浏览数这类"元信息"原来太暗 */
+[data-theme="dark"] time,
+[data-theme="dark"] .article-meta-wrap,
+[data-theme="dark"] .post-meta-date,
+[data-theme="dark"] .post-meta-label,
+[data-theme="dark"] .article-meta-label,
+[data-theme="dark"] .article-meta-separator,
+[data-theme="dark"] .post-meta-categories,
+[data-theme="dark"] .post-meta-tags,
+[data-theme="dark"] #busuanzi_container_page_pv,
+[data-theme="dark"] .card-archives .card-archive-list-link,
+[data-theme="dark"] .card-categories .card-category-list-link,
+[data-theme="dark"] .aside-list-item .content time {
+  color: #B7C8DA !important;
+  opacity: 1 !important;
+}
+/* 文章标题与列表标题 */
+[data-theme="dark"] .article-title,
+[data-theme="dark"] #article-container h1,
+[data-theme="dark"] #article-container h2,
+[data-theme="dark"] #article-container h3,
+[data-theme="dark"] #article-container h4 {
+  color: #F4F8FC !important;
+}
+/* 侧栏/公告/时钟里的说明文字 */
+[data-theme="dark"] #aside-content .item-headline,
+[data-theme="dark"] .card-announcement,
+[data-theme="dark"] .card-clock-own,
+[data-theme="dark"] .card-webinfo .webinfo-item {
+  color: #E3EBF4 !important;
+}
+/* 引用块与代码 */
+[data-theme="dark"] #article-container blockquote { color: #DCE6F1 !important; }
+[data-theme="dark"] #article-container code { color: #F0D9A8 !important; }
+
+/* ---------- 3. 我自己组件里的"弱文本"也提亮 ---------- */
+.wave-section > .wave-sec-sub { opacity: .82 !important; }
+.wave-card p { opacity: .9 !important; }
+.wave-index-row .num { opacity: 1; }
+.wave-cta-card p { opacity: .98 !important; }
+.wave-tags span { font-weight: 500; }
+#page-header.full_page .cine-credits { opacity: .78; }
+#page-header.full_page .cine-en { opacity: .82; }
+
+/* 亮色模式下也让次要文字可读 */
+[data-theme="light"] .wave-card p { color: rgba(30, 45, 62, .82); }
+[data-theme="light"] .wave-section > .wave-sec-sub { color: rgba(30, 45, 62, .72); }
+
+/* ---------- 4. 文章标题前缀：自绘竖条（替换主题的图标字体）---------- */
+#article-container h2::before {
+  content: "";
+  display: inline-block;
+  width: 3px; height: .92em;
+  margin-right: .55rem;
+  vertical-align: -.06em;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--w-ochre), var(--w-teal));
+}
+[data-theme="dark"] #article-container h2 { color: #F4F8FC !important; }
+/* ---------- 6. 标题锚点图标：默认隐藏、悬停才淡出显示（原来一直亮着像乱码）---------- */
+#article-container .headerlink {
+  opacity: 0 !important;
+  margin-right: .35rem;
+  font-size: .68em;
+  transition: opacity .25s ease, transform .25s ease;
+  transform: translateY(-1px);
+}
+#article-container h2:hover .headerlink,
+#article-container h3:hover .headerlink,
+#article-container h4:hover .headerlink,
+#article-container h5:hover .headerlink { opacity: .6 !important; }
+/* h3 也给一条更细的竖条，和 h2 呼应 */
+#article-container h3::before {
+  content: "";
+  display: inline-block;
+  width: 2px; height: .8em;
+  margin-right: .45rem;
+  vertical-align: -.02em;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--w-teal), rgba(124,157,156,.4));
+}
+/* ---------- 7. 索引列表：无条件高对比（不再依赖任何动画状态）---------- */
+.wave-index-row .ti,
+.wave-index-row .ti * {
+  color: #FFFFFF !important;
+  opacity: 1 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .45);
+}
+.wave-index-row .de,
+.wave-index-row .de * {
+  color: #D7E3EF !important;
+  opacity: 1 !important;
+}
+.wave-index-row .dt { color: #C6D6E6 !important; opacity: 1 !important; }
+.wave-index-row .num { color: #E0B573 !important; opacity: 1 !important; }
+.wave-index-row, .wave-index-row * { filter: none !important; }
+.wave-index { opacity: 1 !important; }
+.wave-section, .wave-card, .wave-cta-card, .wave-tags { opacity: 1 !important; }
+/* 兜底：任何 reveal 元素最多 1.2 秒内必须完全可见（JS 也会补，见 wave.js） */
+.wave-reveal { opacity: 1 !important; }
+/* ---------- 8. 高清画层：移动端用小图 + 轻微提亮（抵消电影调压暗）---------- */
+#page-header.full_page .wave-art,
+#page-header.full_page {
+  --wave-hd-filter: brightness(1.13) saturate(1.05) contrast(1.02);
+}
+#page-header.full_page .wave-art { filter: var(--wave-hd-filter); }
+/* 主题自带的那层遮罩在首页略减弱，让原作米色天空透出来 */
+#page-header.full_page::after { opacity: .82 !important; }
+@media (max-width: 768px) {
+  /* 手机只加载 248KB 的小图，而不是 851KB 的大图 */
+  #page-header.full_page,
+  #page-header.full_page .wave-art { background-image: url("/img/wave-hd-mobile.jpg") !important; }
+  #page-header.post-bg { background-image: url("/img/wave-hd-mobile.jpg") !important; }
+}
+
+/* ---------- 9. 手机端首屏排版（英文副题原本会溢出，用与基础规则同级的 !important 覆盖）---------- */
+@media (max-width: 768px) {
+  #page-header .cine-en {
+    font-size: .56rem !important;
+    letter-spacing: .09em !important;
+    white-space: normal !important;
+    max-width: 92vw;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+    opacity: .9 !important;
+  }
+  #page-header #site-title, #page-header .site-name {
+    font-size: clamp(1.7rem, 8.4vw, 2.4rem) !important;
+    letter-spacing: .03em !important;
+    line-height: 1.25;
+  }
+  #page-header .cine-credits { font-size: .56rem !important; letter-spacing: .05em !important; line-height: 2; }
+  #page-header .cine-credits span { margin-right: .3rem; }
+  #page-header .wave-cta { flex-wrap: wrap !important; gap: .5rem !important; justify-content: center !important; }
+  #page-header .wave-cta .btn, #page-header .wave-cta a { font-size: .78rem !important; padding: .48rem .8rem !important; }
+  #page-header #site-info { max-width: 94vw; margin-left: auto; margin-right: auto; }
+  #page-header.full_page { overflow-x: hidden; }
+}
+
+
+/* ---------- 10. 手机端：强制给容器一个窄宽度，逼它换行（父级是 absolute+max-content，光靠 flex-wrap 不管用）---------- */
+@media (max-width: 768px) {
+  #page-header .wave-cta,
+  #page-header .cine-credits,
+  #page-header .cine-en,
+  #page-header #site-subtitle {
+    width: 92vw !important;
+    max-width: 92vw !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box;
+  }
+  #page-header .wave-cta { gap: .5rem !important; }
+  #page-header .wave-cta a { flex: 0 1 auto; }
+  #page-header .cine-credits { margin-top: .9rem !important; }
+  #page-header #site-info, #page-header .full_page #site-info { width: 100% !important; max-width: 100% !important; padding: 0 3vw; }
+}
+
+/* ============================================================
+   wave-5.css —— 语言切换按钮 + 英文提示条
+   ============================================================ */
+
+/* 顶部导航里的「中 / EN」切换 */
+#wave-lang-btn {
+  position: fixed;
+  top: 0.75rem;
+  right: 1.1rem;
+  z-index: 1001;
+  display: inline-flex;
+  align-items: center;
+  gap: .32rem;
+  padding: .28rem .62rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font: inherit;
+  font-size: .72rem;
+  line-height: 1;
+  letter-spacing: .06em;
+  color: #EAF1F8;
+  background: rgba(16, 30, 46, .5);
+  border: 1px solid rgba(175, 198, 216, .32);
+  backdrop-filter: blur(10px) saturate(1.2);
+  transition: background .25s ease, border-color .25s ease, transform .25s ease, color .25s ease;
+}
+#wave-lang-btn:hover {
+  background: rgba(201, 160, 99, .92);
+  border-color: transparent;
+  color: #16283C;
+  transform: translateY(-1px);
+}
+#wave-lang-btn span {
+  opacity: .55;
+  transition: opacity .25s ease;
+}
+#wave-lang-btn span[aria-current] {
+  opacity: 1;
+  font-weight: 700;
+}
+#wave-lang-btn i {
+  width: 1px;
+  height: .78em;
+  background: currentColor;
+  opacity: .35;
+}
+/* 亮色模式下也看得见 */
+html:not([data-theme="dark"]) #wave-lang-btn {
+  color: #22344A;
+  background: rgba(247, 243, 232, .72);
+  border-color: rgba(34, 52, 74, .22);
+}
+/* 窄屏：贴到汉堡按钮左边，不压住内容 */
+@media (max-width: 768px) {
+  #wave-lang-btn { top: .55rem; right: 3.2rem; font-size: .68rem; padding: .24rem .5rem; }
+}
+
+/* 英文模式下的提示条（告诉读者正文是中文） */
+.wave-note {
+  display: flex;
+  align-items: flex-start;
+  gap: .5rem;
+  margin: .7rem 0 0;
+  padding: .6rem .85rem;
+  border-radius: 10px;
+  font-size: .8rem;
+  line-height: 1.7;
+  color: #D9E5F0;
+  background: rgba(124, 157, 156, .16);
+  border-left: 3px solid var(--w-ochre, #C9A063);
+}
+.wave-note i { margin-top: .18em; color: var(--w-ochre, #C9A063); }
+html:not([data-theme="dark"]) .wave-note { color: #2A3A4C; background: rgba(124, 157, 156, .18); }
+
+/* 英文模式：隐藏打字机副标题，显示静态英文行 */
+#site-subtitle.wave-hide-typed #subtitle { display: none !important; }
+#site-subtitle .wave-sub-en {
+  display: block;
+  font-size: .95rem;
+  letter-spacing: .04em;
+  opacity: .92;
+}
+/* 英文公告卡 */
+.card-announcement .wave-ann-h {
+  margin: 0 0 .5rem;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.05rem;
+  background: linear-gradient(90deg, #6fcde6, #cc6de6 45%, #e66b6d);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ============================================================
+   波浪主题前端层（wave.css）
+   目标：耳目一新的首页冲击感 + 统一设计系统（取自神奈川冲浪里的色）
+   可整体关闭：注释掉 _config.butterfly.yml 里对应的 inject 行即可
+   ============================================================ */
+
+:root {
+  --w-deep: #223C66;      /* 深海 */
+  --w-main: #2B4C77;      /* 浪身主蓝（主色） */
+  --w-mid: #496C8D;
+  --w-teal: #7C9D9C;      /* 青灰绿（强调） */
+  --w-cream: #DFDCBA;     /* 宣纸米 */
+  --w-ochre: #C9A063;     /* 船体赭黄（点睛） */
+  --w-ink: #16283C;       /* 墨蓝 */
+  --w-hi: #AFC6D8;        /* 浪尖高光 */
+  --w-paper: #F7F3E8;     /* 亮色底（宣纸） */
+}
+
+/* 亮色模式下页面底换成宣纸色 */
+:root {
+  --card-bg: #FFFDF7;
+}
+[data-theme="dark"] {
+  --card-bg: #16283C;
+}
+
+/* ---------- 1. 首页 Hero：画布铺在大图上，文字浮在上层 ---------- */
+#page-header.full_page #wave-hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  mix-blend-mode: soft-light;   /* 与他的画融合，不抢原图 */
+  opacity: 0.95;
+  pointer-events: none;
+}
+#page-header.full_page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(120% 80% at 50% 20%, rgba(34, 60, 102, 0) 35%, rgba(22, 40, 60, 0.55) 100%),
+    linear-gradient(180deg, rgba(22, 40, 60, 0.45) 0%, rgba(22, 40, 60, 0.05) 40%, rgba(22, 40, 60, 0.65) 100%);
+  pointer-events: none;
+}
+#page-header.full_page #site-info { z-index: 3; }
+
+/* Hero 里的行动按钮 */
+.wave-cta {
+  margin-top: 1.6rem;
+  display: flex;
+  gap: 0.85rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  z-index: 4;
+  position: relative;
+}
+.wave-cta a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.62rem 1.25rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  text-decoration: none !important;
+  backdrop-filter: blur(8px);
+  transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+  border: 1px solid rgba(223, 220, 186, 0.45);
+  color: #F7F3E8 !important;
+  background: rgba(34, 60, 102, 0.35);
+  box-shadow: 0 6px 20px rgba(16, 28, 44, 0.28);
+}
+.wave-cta a:hover {
+  transform: translateY(-3px);
+  background: rgba(201, 160, 99, 0.85);
+  color: #1B2A3E !important;
+  box-shadow: 0 12px 28px rgba(16, 28, 44, 0.35);
+}
+.wave-cta a.primary {
+  background: rgba(201, 160, 99, 0.92);
+  color: #1B2A3E !important;
+  border-color: transparent;
+}
+
+/* 向下滚动提示：一道小浪 */
+.wave-scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  z-index: 4;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 1.6px solid rgba(247, 243, 232, 0.6);
+  animation: waveCue 2.4s ease-in-out infinite;
+}
+.wave-scroll-cue::after {
+  content: "";
+  position: absolute; left: 50%; top: 7px;
+  width: 8px; height: 8px; margin-left: -4px;
+  border-right: 1.6px solid rgba(247, 243, 232, 0.85);
+  border-bottom: 1.6px solid rgba(247, 243, 232, 0.85);
+  transform: rotate(45deg);
+}
+@keyframes waveCue {
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity: .9; }
+  50% { transform: translateX(-50%) translateY(8px); opacity: .5; }
+}
+
+/* ---------- 2. 首页正文：编辑式段落 ---------- */
+.wave-section {
+  position: relative;
+  margin: 0 auto 1.5rem;
+  padding: 1.6rem 1.5rem;
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: 0 8px 28px rgba(34, 60, 102, 0.10);
+  overflow: hidden;
+}
+[data-theme="dark"] .wave-section { box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35); }
+
+.wave-section > .wave-sec-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--w-main);
+  margin-bottom: 0.35rem;
+}
+[data-theme="dark"] .wave-section > .wave-sec-title { color: var(--w-hi); }
+.wave-section > .wave-sec-sub {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  margin-bottom: 1.1rem;
+}
+
+/* 青海波分隔线（纯 CSS，无外链） */
+.wave-divider {
+  height: 42px;
+  margin: 0.2rem 0 1.2rem;
+  background-repeat: repeat-x;
+  background-size: 60px 42px;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='42' viewBox='0 0 60 42'><g fill='none' stroke='%232B4C77' stroke-opacity='0.75' stroke-width='1.4'><path d='M0,42 A30,30 0 0 1 60,42'/><path d='M6,42 A24,24 0 0 1 54,42'/><path d='M12,42 A18,18 0 0 1 48,42'/><path d='M18,42 A12,12 0 0 1 42,42'/><path d='M30,42 A30,30 0 0 1 90,42'/><path d='M-30,42 A30,30 0 0 1 30,42'/></g></svg>");
+}
+[data-theme="dark"] .wave-divider { filter: brightness(1.6) saturate(0.9); }
+
+/* 三件事卡片 */
+.wave-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1rem;
+}
+.wave-card {
+  position: relative;
+  padding: 1.15rem 1.1rem;
+  border-radius: 14px;
+  background: linear-gradient(160deg, rgba(43, 76, 119, 0.06), rgba(124, 157, 156, 0.05));
+  border: 1px solid rgba(43, 76, 119, 0.12);
+  transition: transform .3s cubic-bezier(.2, .8, .2, 1), box-shadow .3s ease, border-color .3s ease;
+}
+[data-theme="dark"] .wave-card {
+  background: linear-gradient(160deg, rgba(175, 198, 216, 0.07), rgba(124, 157, 156, 0.05));
+  border-color: rgba(175, 198, 216, 0.14);
+}
+.wave-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(201, 160, 99, 0.55);
+  box-shadow: 0 14px 30px rgba(34, 60, 102, 0.16);
+}
+.wave-card h3 {
+  font-size: 1rem;
+  margin: 0 0 .45rem;
+  display: flex; align-items: center; gap: .45rem;
+  color: var(--w-main);
+}
+[data-theme="dark"] .wave-card h3 { color: var(--w-hi); }
+.wave-card p { font-size: .86rem; line-height: 1.7; opacity: .85; margin: 0; }
+
+/* 精选文章：横向卡流 */
+.wave-rail {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding: .35rem .2rem 1rem;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+}
+.wave-rail::-webkit-scrollbar { height: 6px; }
+.wave-rail::-webkit-scrollbar-thumb { background: rgba(124, 157, 156, .6); border-radius: 3px; }
+.wave-pick {
+  flex: 0 0 268px;
+  scroll-snap-align: start;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--card-bg);
+  border: 1px solid rgba(43, 76, 119, .12);
+  text-decoration: none !important;
+  transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease;
+  display: flex; flex-direction: column;
+}
+[data-theme="dark"] .wave-pick { border-color: rgba(175, 198, 216, .14); }
+.wave-pick:hover { transform: translateY(-5px); box-shadow: 0 16px 32px rgba(34, 60, 102, .22); }
+.wave-pick .cover { height: 132px; background-size: cover; background-position: center; }
+.wave-pick .body { padding: .8rem .9rem 1rem; display: flex; flex-direction: column; gap: .35rem; }
+.wave-pick .t {
+  font-size: .95rem; font-weight: 600; line-height: 1.5;
+  color: var(--font-color, #2b2b2b);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.wave-pick .m { font-size: .74rem; opacity: .6; }
+.wave-pick .d {
+  font-size: .8rem; line-height: 1.65; opacity: .78;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+/* hover 时底部涌起一道浪 */
+.wave-pick::after {
+  content: ""; display: block; height: 6px; margin-top: auto;
+  background: linear-gradient(90deg, transparent, var(--w-teal), var(--w-ochre), transparent);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .45s cubic-bezier(.2,.8,.2,1);
+}
+.wave-pick:hover::after { transform: scaleX(1); }
+
+/* 隐藏主题原始文章列表（内容已搬到 rail + 折叠区） */
+.wave-hidden-list { display: none !important; }
+
+/* 折叠：更多文章 */
+.wave-more {
+  margin-top: .4rem;
+  border-top: 1px dashed rgba(124, 157, 156, .45);
+  padding-top: .9rem;
+}
+.wave-more > summary {
+  cursor: pointer; font-size: .9rem; font-weight: 600;
+  color: var(--w-main); list-style: none;
+}
+[data-theme="dark"] .wave-more > summary { color: var(--w-hi); }
+.wave-more > summary::-webkit-details-marker { display: none; }
+.wave-more-grid { margin-top: .8rem; display: grid; gap: .5rem; }
+.wave-more-grid a {
+  display: flex; align-items: baseline; gap: .7rem;
+  font-size: .88rem; padding: .35rem .2rem;
+  text-decoration: none !important; border-radius: 8px;
+  transition: background .2s ease, padding-left .2s ease;
+}
+.wave-more-grid a:hover { background: rgba(124, 157, 156, .12); padding-left: .6rem; }
+.wave-more-grid time { font-size: .76rem; opacity: .55; flex: 0 0 auto; }
+
+/* ---------- 3. 阅读进度：浪线 ---------- */
+#wave-progress {
+  position: fixed; left: 0; top: 0; height: 3px; width: 100%;
+  transform-origin: 0 50%; transform: scaleX(0);
+  background: linear-gradient(90deg, var(--w-main), var(--w-teal) 45%, var(--w-cream) 75%, var(--w-ochre));
+  z-index: 9998; pointer-events: none;
+  box-shadow: 0 0 10px rgba(124, 157, 156, .5);
+}
+
+/* ---------- 4. 点击涟漪 ---------- */
+.wave-ripple {
+  position: fixed; width: 12px; height: 12px; border-radius: 50%;
+  border: 1.6px solid rgba(175, 198, 216, .9);
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%) scale(0);
+  animation: waveRipple .62s cubic-bezier(.2,.7,.3,1) forwards;
+}
+@keyframes waveRipple {
+  0% { transform: translate(-50%,-50%) scale(0); opacity: .95; }
+  100% { transform: translate(-50%,-50%) scale(9); opacity: 0; }
+}
+
+/* ---------- 5. 页面过渡（View Transitions） ---------- */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: waveOut .42s cubic-bezier(.4,0,.6,1) both; }
+::view-transition-new(root) { animation: waveIn .46s cubic-bezier(.4,0,.6,1) both; }
+@keyframes waveOut { to { opacity: 0; transform: translateY(-14px) scale(.995); } }
+@keyframes waveIn { from { opacity: 0; transform: translateY(16px) scale(.995); } }
+
+/* ---------- 6. 卡片与代码：细节打磨 ---------- */
+#recent-posts .recent-post-item,
+.card-widget, .post-block {
+  border-radius: 14px !important;
+}
+#recent-posts .recent-post-item {
+  transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease;
+}
+#recent-posts .recent-post-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 34px rgba(34, 60, 102, .16);
+}
+figure.highlight, .code-area, pre {
+  border-radius: 12px !important;
+}
+/* 文章首字下沉（编辑感） */
+#article-container > p:first-of-type::first-letter {
+  float: left; font-size: 3.1em; line-height: .86;
+  padding: .06em .12em 0 0; font-weight: 700;
+  color: var(--w-main);
+}
+[data-theme="dark"] #article-container > p:first-of-type::first-letter { color: var(--w-hi); }
+
+/* 导航栏：滚动时毛玻璃 */
+#nav.show, #page-header.nav-fixed #nav {
+  backdrop-filter: blur(12px) saturate(1.25);
+  background: rgba(247, 243, 232, .78) !important;
+}
+[data-theme="dark"] #nav.show, [data-theme="dark"] #page-header.nav-fixed #nav {
+  background: rgba(14, 26, 41, .78) !important;
+}
+
+/* ---------- 7. 尊重"减少动态效果" ---------- */
+@media (prefers-reduced-motion: reduce) {
+  #wave-hero-canvas, .wave-scroll-cue, .wave-pick::after { display: none !important; }
+  .wave-ripple { display: none; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+}
+/* 移动端：关掉画布，省电 */
+@media (max-width: 768px) {
+  #wave-hero-canvas { display: none; }
+  .wave-pick { flex: 0 0 82%; }
+}
+</style></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
   const $loadingBox = document.getElementById('loading-box')
   const $body = document.body
   const preloader = {
@@ -237,10 +1296,10 @@
     btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
     btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
   }
-})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">23</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/portfolio/"><i class="fa-fw fas fa-briefcase"></i><span> 接单</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="page type-categories" id="body-wrap"><header class="not-home-page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">须臾的博客</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/portfolio/"><i class="fa-fw fas fa-briefcase"></i><span> 接单</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">categories</h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="category-lists"><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AI-%E5%B7%A5%E7%A8%8B/">AI 工程</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Rust/">Rust</a><span class="category-list-count">16</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/">工程实践</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%89%A9%E8%81%94%E7%BD%91%E5%AD%A6%E4%B9%A0/">物联网学习</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%96%91%E9%9A%BE%E6%8E%92%E6%9F%A5/">疑难排查</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a><span class="category-list-count">1</span></li></ul></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">须臾</div><div class="author-info-description">Go / 量化交易系统 / AI Agent 工程</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">23</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" href="/portfolio/"><i class="fas fa-briefcase"></i><span>接单 · 作品集</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/PoorThoth" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:yil72866@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content"><b><font color="#e66b6d">欢</font> <font color="#e66d98">迎</font> <font color="#e66cc6">来</font> <font color="#cc6de6">到</font> <font color="#9770e6">我</font> <font color="#6d93e6">的</font> <font color="#6fcde6">博</font> <font color="#72e6b6">客</font> <p align="center">Go · 量化交易系统 · AI Agent 工程</p> <p align="center">合作 / 接单 → 菜单「接单」或 <a href="/portfolio/">作品集</a></p> <p align="center">微信号:PoorThoth</p> <p align="center">QQ号:1497245907</p></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/post/56933.html" title="一个&quot;静默丢弃&quot;的编码坑：脚本明明有输出，系统却什么都没收到"><img src="/img/covers/seigaiha-8.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="一个&quot;静默丢弃&quot;的编码坑：脚本明明有输出，系统却什么都没收到"/></a><div class="content"><a class="title" href="/post/56933.html" title="一个&quot;静默丢弃&quot;的编码坑：脚本明明有输出，系统却什么都没收到">一个&quot;静默丢弃&quot;的编码坑：脚本明明有输出，系统却什么都没收到</a><time datetime="2026-10-01T15:45:00.000Z" title="发表于 2026-10-01 23:45:00">2026-10-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/25034.html" title="RAG 不靠感觉：20 条评测集、命中率与拒答阈值"><img src="/img/covers/seigaiha-2.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RAG 不靠感觉：20 条评测集、命中率与拒答阈值"/></a><div class="content"><a class="title" href="/post/25034.html" title="RAG 不靠感觉：20 条评测集、命中率与拒答阈值">RAG 不靠感觉：20 条评测集、命中率与拒答阈值</a><time datetime="2026-10-01T15:25:00.000Z" title="发表于 2026-10-01 23:25:00">2026-10-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/58893.html" title="桌面客户端交付实录：Tauri 2 的体积、冷启动与进程管理实测"><img src="/img/covers/seigaiha-3.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="桌面客户端交付实录：Tauri 2 的体积、冷启动与进程管理实测"/></a><div class="content"><a class="title" href="/post/58893.html" title="桌面客户端交付实录：Tauri 2 的体积、冷启动与进程管理实测">桌面客户端交付实录：Tauri 2 的体积、冷启动与进程管理实测</a><time datetime="2026-10-01T15:05:00.000Z" title="发表于 2026-10-01 23:05:00">2026-10-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/3658.html" title="给 AI 工具装闸门：权限、人工确认与审计日志怎么落地"><img src="/img/covers/seigaiha-1.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="给 AI 工具装闸门：权限、人工确认与审计日志怎么落地"/></a><div class="content"><a class="title" href="/post/3658.html" title="给 AI 工具装闸门：权限、人工确认与审计日志怎么落地">给 AI 工具装闸门：权限、人工确认与审计日志怎么落地</a><time datetime="2026-10-01T14:45:00.000Z" title="发表于 2026-10-01 22:45:00">2026-10-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/14389.html" title="我在做什么，以及我能提供什么"><img src="/img/covers/seigaiha-8.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="我在做什么，以及我能提供什么"/></a><div class="content"><a class="title" href="/post/14389.html" title="我在做什么，以及我能提供什么">我在做什么，以及我能提供什么</a><time datetime="2026-10-01T14:30:00.000Z" title="发表于 2026-10-01 22:30:00">2026-10-01</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline"><i class="fas fa-folder-open"></i><span>分类</span></div>
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">23</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/portfolio/"><i class="fa-fw fas fa-briefcase"></i><span> 接单</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="page type-categories" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/wave-hd.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">须臾的博客</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/portfolio/"><i class="fa-fw fas fa-briefcase"></i><span> 接单</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">categories</h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="category-lists"><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AI-%E5%B7%A5%E7%A8%8B/">AI 工程</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Rust/">Rust</a><span class="category-list-count">16</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/">工程实践</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%89%A9%E8%81%94%E7%BD%91%E5%AD%A6%E4%B9%A0/">物联网学习</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%96%91%E9%9A%BE%E6%8E%92%E6%9F%A5/">疑难排查</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a><span class="category-list-count">1</span></li></ul></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">须臾</div><div class="author-info-description">Go / 量化交易系统 / AI Agent 工程</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">23</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" href="/portfolio/"><i class="fas fa-briefcase"></i><span>接单 · 作品集</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/PoorThoth" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:yil72866@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content"><b><font color="#e66b6d">欢</font> <font color="#e66d98">迎</font> <font color="#e66cc6">来</font> <font color="#cc6de6">到</font> <font color="#9770e6">我</font> <font color="#6d93e6">的</font> <font color="#6fcde6">博</font> <font color="#72e6b6">客</font> <p align="center">Go · 量化交易系统 · AI Agent 工程</p> <p align="center">合作 / 接单 → 菜单「接单」或 <a href="/portfolio/">作品集</a></p> <p align="center">微信号:PoorThoth</p> <p align="center">QQ号:1497245907</p></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/post/56933.html" title="一个&quot;静默丢弃&quot;的编码坑：脚本明明有输出，系统却什么都没收到"><img src="/img/covers/seigaiha-5.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="一个&quot;静默丢弃&quot;的编码坑：脚本明明有输出，系统却什么都没收到"/></a><div class="content"><a class="title" href="/post/56933.html" title="一个&quot;静默丢弃&quot;的编码坑：脚本明明有输出，系统却什么都没收到">一个&quot;静默丢弃&quot;的编码坑：脚本明明有输出，系统却什么都没收到</a><time datetime="2026-10-01T15:45:00.000Z" title="发表于 2026-10-01 23:45:00">2026-10-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/25034.html" title="RAG 不靠感觉：20 条评测集、命中率与拒答阈值"><img src="/img/covers/seigaiha-7.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RAG 不靠感觉：20 条评测集、命中率与拒答阈值"/></a><div class="content"><a class="title" href="/post/25034.html" title="RAG 不靠感觉：20 条评测集、命中率与拒答阈值">RAG 不靠感觉：20 条评测集、命中率与拒答阈值</a><time datetime="2026-10-01T15:25:00.000Z" title="发表于 2026-10-01 23:25:00">2026-10-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/58893.html" title="桌面客户端交付实录：Tauri 2 的体积、冷启动与进程管理实测"><img src="/img/covers/seigaiha-8.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="桌面客户端交付实录：Tauri 2 的体积、冷启动与进程管理实测"/></a><div class="content"><a class="title" href="/post/58893.html" title="桌面客户端交付实录：Tauri 2 的体积、冷启动与进程管理实测">桌面客户端交付实录：Tauri 2 的体积、冷启动与进程管理实测</a><time datetime="2026-10-01T15:05:00.000Z" title="发表于 2026-10-01 23:05:00">2026-10-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/3658.html" title="给 AI 工具装闸门：权限、人工确认与审计日志怎么落地"><img src="/img/covers/seigaiha-1.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="给 AI 工具装闸门：权限、人工确认与审计日志怎么落地"/></a><div class="content"><a class="title" href="/post/3658.html" title="给 AI 工具装闸门：权限、人工确认与审计日志怎么落地">给 AI 工具装闸门：权限、人工确认与审计日志怎么落地</a><time datetime="2026-10-01T14:45:00.000Z" title="发表于 2026-10-01 22:45:00">2026-10-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/14389.html" title="我在做什么，以及我能提供什么"><img src="/img/covers/seigaiha-4.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="我在做什么，以及我能提供什么"/></a><div class="content"><a class="title" href="/post/14389.html" title="我在做什么，以及我能提供什么">我在做什么，以及我能提供什么</a><time datetime="2026-10-01T14:30:00.000Z" title="发表于 2026-10-01 22:30:00">2026-10-01</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline"><i class="fas fa-folder-open"></i><span>分类</span></div>
           <ul class="card-category-list" id="aside-cat-list">
             <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/AI-%E5%B7%A5%E7%A8%8B/"><span class="card-category-list-name">AI 工程</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Rust/"><span class="card-category-list-name">Rust</span><span class="card-category-list-count">16</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/"><span class="card-category-list-name">工程实践</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E7%89%A9%E8%81%94%E7%BD%91%E5%AD%A6%E4%B9%A0/"><span class="card-category-list-name">物联网学习</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E7%96%91%E9%9A%BE%E6%8E%92%E6%9F%A5/"><span class="card-category-list-name">疑难排查</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E9%9A%8F%E7%AC%94/"><span class="card-category-list-name">随笔</span><span class="card-category-list-count">1</span></a></li>
-          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/Rust/" style="font-size: 1.45em; color: rgb(50, 50, 50);">Rust</a><a href="/tags/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/" style="font-size: 1.3em; color: rgb(54, 50, 71);">技术学习</a><a href="/tags/RAG/" style="font-size: 1.15em; color: rgb(50, 77, 155);">RAG</a><a href="/tags/%E6%A3%80%E7%B4%A2/" style="font-size: 1.15em; color: rgb(173, 155, 50);">检索</a><a href="/tags/%E8%AF%84%E6%B5%8B/" style="font-size: 1.15em; color: rgb(84, 102, 144);">评测</a><a href="/tags/%E7%9F%A5%E8%AF%86%E5%BA%93/" style="font-size: 1.15em; color: rgb(50, 50, 121);">知识库</a><a href="/tags/TCP-IP/" style="font-size: 1.15em; color: rgb(68, 152, 50);">TCP/IP</a><a href="/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/" style="font-size: 1.15em; color: rgb(94, 50, 193);">网络协议</a><a href="/tags/%E5%85%B3%E4%BA%8E/" style="font-size: 1.15em; color: rgb(179, 155, 142);">关于</a><a href="/tags/%E5%90%88%E4%BD%9C/" style="font-size: 1.15em; color: rgb(50, 118, 50);">合作</a><a href="/tags/%E6%97%A0%E7%BA%BF%E9%80%9A%E4%BF%A1/" style="font-size: 1.15em; color: rgb(98, 148, 197);">无线通信</a><a href="/tags/AI/" style="font-size: 1.15em; color: rgb(191, 59, 50);">AI</a><a href="/tags/Agent/" style="font-size: 1.15em; color: rgb(50, 50, 76);">Agent</a><a href="/tags/MCP/" style="font-size: 1.15em; color: rgb(153, 165, 132);">MCP</a><a href="/tags/%E6%9D%83%E9%99%90/" style="font-size: 1.15em; color: rgb(116, 50, 50);">权限</a><a href="/tags/%E5%AE%A1%E8%AE%A1/" style="font-size: 1.15em; color: rgb(113, 50, 148);">审计</a><a href="/tags/Tauri/" style="font-size: 1.15em; color: rgb(166, 115, 50);">Tauri</a><a href="/tags/%E6%A1%8C%E9%9D%A2%E7%AB%AF/" style="font-size: 1.15em; color: rgb(100, 158, 50);">桌面端</a><a href="/tags/%E4%BA%A4%E4%BB%98/" style="font-size: 1.15em; color: rgb(50, 50, 191);">交付</a><a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 1.15em; color: rgb(89, 184, 124);">编码</a><a href="/tags/Windows/" style="font-size: 1.15em; color: rgb(141, 50, 93);">Windows</a><a href="/tags/%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/" style="font-size: 1.15em; color: rgb(186, 50, 112);">定时任务</a><a href="/tags/%E6%8E%92%E6%9F%A5/" style="font-size: 1.15em; color: rgb(109, 50, 150);">排查</a></div></div><div class="card-widget card-archives">
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/Rust/" style="font-size: 1.45em; color: rgb(51, 166, 196);">Rust</a><a href="/tags/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/" style="font-size: 1.3em; color: rgb(199, 170, 50);">技术学习</a><a href="/tags/RAG/" style="font-size: 1.15em; color: rgb(50, 99, 107);">RAG</a><a href="/tags/%E6%A3%80%E7%B4%A2/" style="font-size: 1.15em; color: rgb(76, 75, 98);">检索</a><a href="/tags/%E8%AF%84%E6%B5%8B/" style="font-size: 1.15em; color: rgb(95, 198, 118);">评测</a><a href="/tags/%E7%9F%A5%E8%AF%86%E5%BA%93/" style="font-size: 1.15em; color: rgb(133, 50, 50);">知识库</a><a href="/tags/TCP-IP/" style="font-size: 1.15em; color: rgb(112, 104, 76);">TCP/IP</a><a href="/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/" style="font-size: 1.15em; color: rgb(73, 179, 148);">网络协议</a><a href="/tags/%E5%85%B3%E4%BA%8E/" style="font-size: 1.15em; color: rgb(189, 50, 50);">关于</a><a href="/tags/%E5%90%88%E4%BD%9C/" style="font-size: 1.15em; color: rgb(50, 186, 132);">合作</a><a href="/tags/%E6%97%A0%E7%BA%BF%E9%80%9A%E4%BF%A1/" style="font-size: 1.15em; color: rgb(186, 50, 95);">无线通信</a><a href="/tags/Tauri/" style="font-size: 1.15em; color: rgb(53, 50, 84);">Tauri</a><a href="/tags/%E6%A1%8C%E9%9D%A2%E7%AB%AF/" style="font-size: 1.15em; color: rgb(141, 173, 107);">桌面端</a><a href="/tags/%E4%BA%A4%E4%BB%98/" style="font-size: 1.15em; color: rgb(50, 111, 50);">交付</a><a href="/tags/AI/" style="font-size: 1.15em; color: rgb(151, 105, 69);">AI</a><a href="/tags/Agent/" style="font-size: 1.15em; color: rgb(166, 50, 149);">Agent</a><a href="/tags/MCP/" style="font-size: 1.15em; color: rgb(50, 79, 70);">MCP</a><a href="/tags/%E6%9D%83%E9%99%90/" style="font-size: 1.15em; color: rgb(129, 196, 50);">权限</a><a href="/tags/%E5%AE%A1%E8%AE%A1/" style="font-size: 1.15em; color: rgb(148, 186, 50);">审计</a><a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 1.15em; color: rgb(159, 121, 50);">编码</a><a href="/tags/Windows/" style="font-size: 1.15em; color: rgb(198, 81, 168);">Windows</a><a href="/tags/%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/" style="font-size: 1.15em; color: rgb(53, 91, 65);">定时任务</a><a href="/tags/%E6%8E%92%E6%9F%A5/" style="font-size: 1.15em; color: rgb(197, 149, 127);">排查</a></div></div><div class="card-widget card-archives">
     <div class="item-headline"><i class="fas fa-archive"></i><span>归档</span></div>
   
     <ul class="card-archive-list">
@@ -300,7 +1359,7 @@
         </li>
       
     </ul>
-  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">24</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-10-01T13:58:59.326Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 须臾</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.0</a></span></div><div class="footer_custom_text"><imgsrc="https://haiyong.site/img/icp.png"><a href="https://beian.miit.gov.cn/#/Integrated/index"  style="color:white" target="_blank"></a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><div class="js-pjax"></div><div class="aplayer no-destroy" data-id="7902836939" data-server="netease" data-type="playlist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="none" data-autoplay="false" muted></div><link rel="stylesheet" href="/css/clock-card.css"><script>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">24</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-10-01T15:30:30.242Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 须臾</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.0</a></span></div><div class="footer_custom_text"><imgsrc="https://haiyong.site/img/icp.png"><a href="https://beian.miit.gov.cn/#/Integrated/index"  style="color:white" target="_blank"></a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><div class="js-pjax"></div><div class="aplayer no-destroy" data-id="7902836939" data-server="netease" data-type="playlist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="none" data-autoplay="false" muted></div><link rel="stylesheet" href="/css/clock-card.css"><script>
 /* 自写时间/天气卡片
  * 为什么自己写：原插件（hexo-butterfly-clock-anzhiyu）依赖和风天气的免费组件（已停用）、
  * 并把 API key 明文写进页面；且和风 v7 免费账号需要专属 API Host 才能取天气。
@@ -452,4 +1511,821 @@
 POWERMODE.shake = true;
 POWERMODE.mobile = false;
 document.body.addEventListener('input', POWERMODE);
-</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script id="wave-js">/* ============================================================
+   wave-i18n.js —— 中英文界面切换（文章正文不翻译）
+   · 主题界面词条：从 themes/butterfly/languages/{zh-CN,en}.yml 自动配对（74 条）
+   · 自定义词条 + 我的模块文案：见下方 EXTRA / STRINGS
+   · 用法：WaveI18N.t("key")、WaveI18N.lang()、WaveI18N.set("en")
+   · 切换后触发 window 事件 "wave:lang"，wave.js 监听并重建自定义模块
+   ============================================================ */
+(function () {
+  "use strict";
+  var THEME = { "框架": "Framework", "主题": "Theme", "复制成功": "Copy Successful", "复制失败": "Copy Failed", "浏览器不支持": "Browser Not Supported", "全部文章": "All Articles", "标签": "Tags", "分类": "Categories", "归档": "Archives", "条评论": "comments", "无标题": "Untitled", "发表于": "Created", "更新于": "Updated", "总字数": "Word Count", "阅读时长": "Reading Time", "分钟": "mins", "浏览量": "Post Views", "评论数": "Comments", "文章作者": "Author", "文章链接": "Link", "版权声明": "Copyright Notice", "相关推荐": "Related Articles", "编辑": "Edit", "返回首页": "Back to Home", "搜索": "Search", "数据加载中": "Loading Database", "搜索文章": "Search for Posts", "上一篇": "Previous", "下一篇": "Next", "评论": "Comments", "文章": "Articles", "公告": "Announcement", "最新文章": "Recent Posts", "网站信息": "Website Info", "文章数目": "Article Count", "运行时间": "Runtime", "天": "days", "最后更新时间": "Last Update", "本站总字数": "Total Word Count", "本站访客数": "Unique Visitors", "本站总浏览量": "Page Views", "查看更多": "View More", "最新评论": "Latest Comments", "加载中...": "Loading...", "无法获取评论，请确认相关配置是否正确": "Unable to retrieve comments, please check the configuration", "暂无评论": "No comments", "图片": "Image", "链接": "Link", "代码": "Code", "目录": "Table of Contents", "系列文章": "Post Series", "刚刚": "Just now", "分钟前": "minutes ago", "小时前": "hours ago", "天前": "days ago", "个月前": "months ago", "赞助": "Sponsor", "分享": "Share", "阅读模式": "Reading Mode", "简繁转换": "Toggle Between Traditional and Simplified Chinese", "日间和夜间模式切换": "Toggle Between Light and Dark Mode", "回到顶部": "Back to Top", "前往评论": "Scroll to Comments", "设置": "Settings", "单栏和双栏切换": "Toggle Between Single-column and Double-column", "聊天": "Chat", "作者": "Author", "来源": "Source", "已切换为繁体中文": "You have switched to Traditional Chinese", "已切换为简体中文": "You have switched to Simplified Chinese", "已切换为深色模式": "You have switched to Dark Mode", "已切换为浅色模式": "You have switched to Light Mode", "加载更多": "Load More", "页面未找到": "Page Not Found" };
+  var EXTRA = { "首页": "Home", "归档": "Archives", "标签": "Tags", "分类": "Categories", "接单": "Hire Me", "关于": "About", "须臾的博客": "Xuyu's Blog", "须臾": "Xuyu", "接单 · 作品集": "Hire · Portfolio", "作品集": "Portfolio", "欢迎来到": "Welcome to", "加载中...": "Loading…", "站点信息": "Site Info", "网站信息": "Site Info", "我在做什么": "What I Do", "最近的写作": "Recent Writing", "更多文章": "More Posts", "合作 / 接单": "Work With Me", "技术栈": "Tech Stack", "阅读全文": "Read More", "查看全部": "View All", "全部文章": "All Posts", "文章数目 :": "Posts:", "本站总浏览量 :": "Total Views:", "本站访客数 :": "Visitors:", "最后更新时间 :": "Last Updated:", "目录": "Contents", "字体大小": "Text Size", "夜间模式": "Dark Mode", "回到顶部": "Back to Top", "搜索": "Search", "2023 年": "2023", "开始于": "Started", "Go / 量化交易系统 / AI Agent 工程": "Go / Quant Systems / AI Agent Engineering", "这是一个": "Notes on ", "贵州 · 兴义": "Guizhou · Xingyi", "贵州·兴义": "Guizhou · Xingyi", "微信号": "WeChat", "QQ号": "QQ", "微信号:PoorThoth": "WeChat: PoorThoth", "Go · 量化交易系统 · AI Agent 工程": "Go · Quant Systems · AI Agent Engineering", "接单合作：菜单「接单」": "Open for work: “Hire Me” in the menu", "清风已随万物去，徒留人间一片云。": "The wind departs with all things; a single cloud remains.", "邮箱": "Email", "博客": "Blog", "本站": "Site", "欢迎来我的博客": "Welcome to my blog", "这里记录我在后端 / 量化 / AI 工程上的实践与踩坑。": "Notes on backend, quant and AI engineering.", "需要 Go / 量化 / AI 集成方面的人手，看菜单里的「接单」。": "Need Go / quant / AI integration work? See “Hire Me”." };
+  var MONTHS = { "一月": "January", "二月": "February", "三月": "March", "四月": "April", "五月": "May", "六月": "June", "七月": "July", "八月": "August", "九月": "September", "十月": "October", "十一月": "November", "十二月": "December" };
+  var STRINGS = { "hero.kicker": { "zh": "Ling Guiqian · Backend · Quant Systems · AI Agent", "en": "Ling Guiqian · Backend · Quant Systems · AI Agent" }, "hero.c1": { "zh": "接单合作 · 作品集", "en": "Hire Me · Portfolio" }, "hero.c2": { "zh": "看全部文章", "en": "All Posts" }, "hero.c3": { "zh": "关于我", "en": "About Me" }, "hero.credits": { "zh": "Go|Quant|AI Agent|Tauri|UTC+8|Open for work", "en": "Go|Quant|AI Agent|Desktop|UTC+8|Open for work" }, "do.title": { "zh": "我在做什么", "en": "What I Do" }, "do.sub": { "zh": "Go 后端 · 量化系统 · AI Agent · 桌面端交付 — 都是自己动手做过的东西", "en": "Go backends · quant systems · AI agents · desktop apps — things I built with my own hands" }, "do.c1.t": { "zh": "量化交易系统（Go）", "en": "Quant Trading System (Go)" }, "do.c1.d": { "zh": "策略引擎与行情管线：K 线采集与校验、价格行为结构识别、回测、风控闸门（人工确认 / 额度 / 审计）。", "en": "Strategy engine and market-data pipeline: candle ingestion and validation, price-action structure detection, backtesting, risk gates (human confirmation / limits / audit)." }, "do.c2.t": { "zh": "AI Agent 工程", "en": "AI Agent Engineering" }, "do.c2.d": { "zh": "多智能体编排、工具调用的权限 scope 与人工确认、本地大模型推理服务——重点让它出错时不造成破坏。", "en": "Multi-agent orchestration, permission-scoped tool calls with human confirmation, local LLM inference — designed so failures cannot cause damage." }, "do.c3.t": { "zh": "业务系统与桌面端", "en": "Business Systems & Desktop" }, "do.c3.d": { "zh": "SpringBoot + Vue + MySQL 业务系统；Tauri 2 桌面客户端交付（7.9 MB 绿色包，冷启动 608 ms）。", "en": "SpringBoot + Vue + MySQL business systems; a Tauri 2 desktop client delivered (7.9 MB portable build, 608 ms cold start)." }, "idx.title": { "zh": "最近的写作", "en": "Recent Writing" }, "idx.sub": { "zh": "踩过的坑、实测算出来的数字、能复用的方法", "en": "Pitfalls, measured numbers, reusable methods" }, "idx.more": { "zh": "更早的文章", "en": "Earlier posts" }, "idx.all": { "zh": "去归档页看全部", "en": "Browse the full archive" }, "cta.h": { "zh": "合作 / 接单", "en": "Work With Me" }, "cta.p": { "zh": "正在接<b>远程兼职</b>（UTC+8，可异步交付）：Go 后端 · 数据管道 · AI 集成（本地大模型部署 / RAG / MCP 工具服务）· 全栈业务系统 · 桌面端交付。前两单可半价，换一条真实评价与案例署名授权。", "en": "Open for <b>remote part-time work</b> (UTC+8, async): Go backends · data pipelines · AI integration (local LLM deployment / RAG / MCP tool servers) · full-stack business systems · desktop apps. The first two jobs can be half price in exchange for a real review and permission to use the work as a case study." }, "cta.b1": { "zh": "看作品集与服务说明", "en": "Portfolio & services" }, "tech.title": { "zh": "技术栈", "en": "Tech Stack" }, "handoff": { "zh": "文章正文为中文；界面可按右上角切换语言。", "en": "Articles are written in Chinese. Use the button in the top-right corner to switch the interface language." } };
+  var KEY = "wave-lang";
+  var ZH2EN = {};
+  var i;
+  for (i in THEME) ZH2EN[i] = THEME[i];
+  for (i in EXTRA) ZH2EN[i] = EXTRA[i];
+
+  var CUR = null;
+  try { CUR = localStorage.getItem(KEY); } catch (e) {}
+  if (CUR !== "zh" && CUR !== "en") {
+    CUR = "zh";
+    try {
+      var nl = (navigator.language || navigator.userLanguage || "").toLowerCase();
+      if (nl && nl.indexOf("zh") !== 0) CUR = "en";     // 非中文浏览器默认英文（面向海外客户）
+    } catch (e) {}
+  }
+
+  function t(key, fallback) {
+    var s = STRINGS[key];
+    if (!s) return fallback || key;
+    return s[CUR] || s.zh;
+  }
+  function lang() { return CUR; }
+
+  /* ---------- 文本节点翻译（保留原文以便切回）---------- */
+  var SKIP_TAGS = { SCRIPT: 1, STYLE: 1, NOSCRIPT: 1, CODE: 1, PRE: 1, KBD: 1, TEXTAREA: 1, SVG: 1 };
+  function skipEl(el) {
+    if (!el || el.nodeType !== 1) return false;
+    if (SKIP_TAGS[el.tagName]) return true;
+    var id = el.id || "", cl = el.className || "";
+    if (id === "article-container") return true;                       // 文章正文不翻译
+    if (typeof cl === "string" && cl.indexOf("post-content") >= 0) return true;
+    if (cl.indexOf && cl.indexOf("highlight") >= 0) return true;
+    if (el.hasAttribute && el.hasAttribute("data-no-i18n")) return true;
+    return false;
+  }
+  function trText(s) {
+    var raw = s;
+    var core = raw.trim();
+    if (!core) return null;
+    if (ZH2EN[core]) return raw.replace(core, ZH2EN[core]);
+    // 去掉尾部冒号/顿号等再查一次（主题会渲染成"浏览量:"而没有词条）
+    var bare = core.replace(/[：:、·。，,\s]+$/, "");
+    if (bare && bare !== core && ZH2EN[bare]) return raw.replace(core, ZH2EN[bare] + core.slice(bare.length));
+    // 动态：月份 / 相对时间 / 页码
+    var m = core.match(/^([一二三四五六七八九十]+月)\s+(\d{4})$/);
+    if (m && MONTHS[m[1]]) return raw.replace(core, MONTHS[m[1]] + " " + m[2]);
+    m = core.match(/^(\d+)\s*(分钟|小时|天|周|个月|年)前$/);
+    if (m) {
+      var u = { "分钟": "minute", "小时": "hour", "天": "day", "周": "week", "个月": "month", "年": "year" }[m[2]];
+      var n = parseInt(m[1], 10);
+      return raw.replace(core, m[1] + " " + u + (n === 1 ? "" : "s") + " ago");
+    }
+    if (core === "刚刚") return raw.replace(core, "just now");
+    m = core.match(/^第\s*(\d+)\s*页\s*\/\s*共\s*(\d+)\s*页$/);
+    if (m) return raw.replace(core, "Page " + m[1] + " of " + m[2]);
+    m = core.match(/^共\s*(\d+)\s*篇$/);
+    if (m) return raw.replace(core, m[1] + " posts");
+    return null;
+  }
+  function walk(root) {
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        if (!n.nodeValue || !/[\u4e00-\u9fff]/.test(n.nodeValue)) return NodeFilter.FILTER_REJECT;
+        var p = n.parentNode;
+        while (p && p !== root) { if (skipEl(p)) return NodeFilter.FILTER_REJECT; p = p.parentNode; }
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var nodes = [], n;
+    while ((n = walker.nextNode())) nodes.push(n);
+    for (var k = 0; k < nodes.length; k++) {
+      var node = nodes[k];
+      if (CUR === "en") {
+        if (node.__waveZh === undefined) {
+          var out = trText(node.nodeValue);
+          if (out !== null && out !== node.nodeValue) {
+            node.__waveZh = node.nodeValue;
+            node.nodeValue = out;
+          }
+        } else if (trText(node.__waveZh) === null) { /* 已翻译且不可再翻 */ }
+      }
+    }
+    // 属性（placeholder / title / aria-label）
+    var els = root.querySelectorAll ? root.querySelectorAll("[placeholder],[title],[aria-label]") : [];
+    for (var e = 0; e < els.length; e++) {
+      var el = els[e];
+      for (var a = 0; a < 3; a++) {
+        var attr = ["placeholder", "title", "aria-label"][a];
+        var v = el.getAttribute && el.getAttribute(attr);
+        if (!v) continue;
+        var key2 = "__waveAttr_" + attr;
+        if (CUR === "en") {
+          if (el[key2] === undefined) {
+            var o2 = trText(v);
+            if (o2 !== null && o2 !== v) { el[key2] = v; el.setAttribute(attr, o2); }
+          }
+        }
+      }
+    }
+  }
+  function restore(root) {
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    var nodes = [], n;
+    while ((n = walker.nextNode())) nodes.push(n);
+    for (var k = 0; k < nodes.length; k++) {
+      if (nodes[k].__waveZh !== undefined) { nodes[k].nodeValue = nodes[k].__waveZh; delete nodes[k].__waveZh; }
+    }
+    var els = root.querySelectorAll ? root.querySelectorAll("[placeholder],[title],[aria-label]") : [];
+    for (var e = 0; e < els.length; e++) {
+      for (var a = 0; a < 3; a++) {
+        var attr = ["placeholder", "title", "aria-label"][a], key2 = "__waveAttr_" + attr;
+        if (els[e][key2] !== undefined) { els[e].setAttribute(attr, els[e][key2]); delete els[e][key2]; }
+      }
+    }
+  }
+
+  /* ---------- 标题（<title> / 分享卡）---------- */
+  var TITLE_ZH = document.title;
+  function applyTitle() {
+    try {
+      if (CUR === "en") {
+        if (!window.__waveTitleZh) window.__waveTitleZh = document.title;
+        document.title = window.__waveTitleZh
+          .replace(/须臾的博客/g, "Xuyu's Blog").replace(/首页/g, "Home");
+        if (document.documentElement) document.documentElement.setAttribute("lang", "en");
+      } else if (window.__waveTitleZh) {
+        document.title = window.__waveTitleZh;
+        document.documentElement.setAttribute("lang", "zh-CN");
+      }
+    } catch (e) {}
+  }
+
+  /* 公告卡：原文是逐字 <font> 彩色字，按词翻译不可能 —— 英文模式下整块替换 */
+  var ANNOUNCE_EN =
+    '<p class="wave-ann-h">Welcome to my blog</p>' +
+    '<p align="center">Go · Quant Systems · AI Agent Engineering</p>' +
+    '<p align="center">Open for work → <a href="/portfolio/">Portfolio</a> &nbsp;|&nbsp; WeChat: PoorThoth<br>' +
+    'Email: yil72866@gmail.com</p>';
+
+  function applyBlocks() {
+    // 1) 公告卡整块替换
+    try {
+      var a = document.querySelector(".card-announcement .announcement_content");
+      if (a) {
+        if (CUR === "en") {
+          if (a.__waveHtml === undefined) { a.__waveHtml = a.innerHTML; a.innerHTML = ANNOUNCE_EN; a.setAttribute("data-no-i18n", "1"); }
+        } else if (a.__waveHtml !== undefined) { a.innerHTML = a.__waveHtml; delete a.__waveHtml; a.removeAttribute("data-no-i18n"); }
+      }
+    } catch (e) {}
+    // 2) 打字机副标题：英文模式隐藏打字机，插一行静态英文（避免与 typed.js 抢 DOM）
+    try {
+      var sub = document.getElementById("site-subtitle");
+      if (sub) {
+        if (CUR === "en") {
+          sub.classList.add("wave-hide-typed");
+          if (!sub.querySelector(".wave-sub-en")) {
+            var sp = document.createElement("span");
+            sp.className = "wave-sub-en";
+            sp.setAttribute("data-wi", "1");
+            sp.textContent = "Ling Guiqian — Go · Quant Systems · AI Agent Engineering";
+            sub.appendChild(sp);
+          }
+        } else {
+          sub.classList.remove("wave-hide-typed");
+          var old2 = sub.querySelector(".wave-sub-en");
+          if (old2 && old2.parentNode) old2.parentNode.removeChild(old2);
+        }
+      }
+    } catch (e) {}
+  }
+
+  function apply() {
+    try {
+      applyBlocks();
+      if (CUR === "en") walk(document.body); else restore(document.body);
+      applyTitle();
+      var b = document.getElementById("wave-lang-btn");
+      if (b) {
+        b.setAttribute("data-lang", CUR);
+        b.innerHTML = '<span class="zh"' + (CUR === "zh" ? ' aria-current="true"' : "") + '>中</span><i></i><span class="en"' + (CUR === "en" ? ' aria-current="true"' : "") + '>EN</span>';
+        b.title = CUR === "zh" ? "Switch to English" : "切换为中文";
+      }
+    } catch (e) {}
+  }
+
+  function set(next) {
+    if (next !== "en" && next !== "zh") return;
+    CUR = next;
+    try { localStorage.setItem(KEY, CUR); } catch (e) {}
+    window.dispatchEvent(new CustomEvent("wave:lang", { detail: { lang: CUR } }));
+    apply();
+  }
+
+  /* ---------- 切换按钮 ---------- */
+  function mountButton() {
+    try {
+      var nav = document.querySelector("#nav");
+      if (!nav || document.getElementById("wave-lang-btn")) return;
+      var b = document.createElement("button");
+      b.id = "wave-lang-btn";
+      b.type = "button";
+      b.setAttribute("aria-label", "Language");
+      b.addEventListener("click", function (ev) {
+        ev.preventDefault(); ev.stopPropagation();
+        set(CUR === "zh" ? "en" : "zh");
+      });
+      nav.appendChild(b);
+    } catch (e) {}
+  }
+
+  var _t = null;
+  function scheduleApply() { if (_t) clearTimeout(_t); _t = setTimeout(function () { _t = null; apply(); }, 160); }
+  function observe() {
+    try {
+      if (!window.MutationObserver || window.__waveMO) return;
+      var mo = new MutationObserver(function (muts) {
+        for (var i = 0; i < muts.length; i++) {
+          var m = muts[i];
+          // 忽略我们自己的改写（已记录原文的文本节点）
+          if (m.type === "characterData" && m.target && m.target.__waveZh !== undefined) continue;
+          scheduleApply();
+          return;
+        }
+      });
+      window.__waveMO = mo;
+      mo.observe(document.body, { childList: true, subtree: true, characterData: true });
+    } catch (e) {}
+  }
+  function boot() {
+    mountButton();
+    try {
+      var m = /[?&]lang=(zh|en)/.exec(location.search);
+      if (m && m[1] !== CUR) { set(m[1]); return; }     // 便于分享"英文版"链接与本地预览
+    } catch (e) {}
+    apply();
+    observe();
+    // 主题的 typed.js / 侧栏抽屉 / 懒加载会在首屏之后重写 DOM，补扫几轮
+    [400, 1200, 2600, 5000].forEach(function (ms) { setTimeout(apply, ms); });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { setTimeout(boot, 0); });
+  else setTimeout(boot, 0);
+  document.addEventListener("pjax:complete", function () { setTimeout(boot, 30); });
+
+  window.WaveI18N = { t: t, lang: lang, set: set, apply: apply, dict: ZH2EN, strings: STRINGS };
+})();
+
+/* ============================================================
+   波浪主题前端层（wave.js）
+   1) 首页 Hero：WebGL 波浪动画（与背景画叠加）
+   2) 首页重构：三件事卡片 + 精选文章横向卡流 + 折叠更多文章
+   3) 文章页：阅读进度浪线
+   4) 全局：点击涟漪、View Transitions 兜底
+   设计原则：任何一步失败都静默降级，不阻塞页面；移动端/省电模式自动关闭重效果
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var QS = location.search || "";
+  var FORCE = /[?&]wave=1/.test(QS);          // 开发用：强制开启动画
+  var SHORT_HERO = /[?&]hero=short/.test(QS);  // 开发用：压缩首屏，便于整页预览
+
+  /* 文案：优先取语言层词条（wave-i18n.js），缺失则用中文兜底 */
+  function W(k, d) { try { return (window.WaveI18N && window.WaveI18N.t) ? window.WaveI18N.t(k, d) : d; } catch (e) { return d; } }
+  function isEN() { try { return !!(window.WaveI18N && window.WaveI18N.lang && window.WaveI18N.lang() === "en"); } catch (e) { return false; } }
+  var reduceMotion = !FORCE && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var isMobile = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+  var state = { hero: false, home: false, prog: false, fx: false };
+
+  /* ---------------- 1. Hero 波浪画布 ---------------- */
+  var VS = "attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }";
+  var FS = [
+    "precision mediump float;",
+    "uniform vec2 u_res; uniform float u_time; uniform vec2 u_mouse; uniform float u_scroll;",
+    "vec3 DEEP=vec3(0.133,0.235,0.400), MAIN=vec3(0.169,0.298,0.467), MID=vec3(0.286,0.424,0.553);",
+    "vec3 TEAL=vec3(0.486,0.616,0.612), CREAM=vec3(0.875,0.863,0.729), OCHRE=vec3(0.788,0.627,0.388);",
+    "float wv(vec2 p, float t){",
+    "  float y = 0.0;",
+    "  y += sin(p.x*2.7 + t*0.55)*0.085;",
+    "  y += sin(p.x*5.9 - t*0.85)*0.045;",
+    "  y += sin(p.x*11.3 + t*1.25)*0.020;",
+    "  y += sin(p.x*19.0 - t*1.70)*0.009;",
+    "  float d = distance(p, u_mouse);",
+    "  y += sin(16.0*d - t*3.2)*0.035*exp(-5.5*d);",
+    "  return y;",
+    "}",
+    "void main(){",
+    "  vec2 uv = gl_FragCoord.xy / u_res;",
+    "  vec2 p = vec2(uv.x*2.0-1.0, uv.y*2.0-1.0); p.y += (uv.x-0.5)*0.14;",
+    "  float t = u_time*0.5;",
+    "  float k = wv(p, t);",
+    "  float dist = abs(p.y - k + 0.16);",
+    "  vec3 col = mix(DEEP, MAIN, smoothstep(0.0,1.0,uv.y));",
+    "  col = mix(col, MID,  smoothstep(0.62,0.10,dist));",
+    "  col = mix(col, TEAL, smoothstep(0.34,0.00,dist));",
+    "  col = mix(col, CREAM, smoothstep(0.085,0.0,dist)*0.92);",
+    "  col += OCHRE*0.14*smoothstep(0.10,0.0,abs(dist-0.02));",
+    "  float v = smoothstep(1.25,0.15,length(p*vec2(0.85,1.0)));",
+    "  col *= mix(0.72,1.06,v);",
+    "  col *= (1.0 - 0.22*clamp(u_scroll,0.0,1.5));",
+    "  gl_FragColor = vec4(col, 1.0);",
+    "}"
+  ].join("\n");
+
+  function initHero() {
+    if (state.hero) return;
+    var header = document.querySelector("#page-header.full_page");
+    if (!header) { diag("noHeader"); return; }
+    if (SHORT_HERO) header.style.height = "460px";   // 开发用：先压高度，任何模式都生效
+    if (isMobile) { diag("isMobile"); return; }
+    if (reduceMotion) { diag("reducedMotion"); return; }
+    var canvas = document.createElement("canvas");
+    canvas.id = "wave-hero-canvas";
+    header.appendChild(canvas);
+
+    var gl = canvas.getContext("webgl", { antialias: false, alpha: true, powerPreference: "low-power" });
+    if (!gl) { canvas.remove(); diag("noWebGL"); return; }
+
+    function sh(type, src) {
+      var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+      return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null;
+    }
+    var vs = sh(gl.VERTEX_SHADER, VS), fs = sh(gl.FRAGMENT_SHADER, FS);
+    if (!vs || !fs) { canvas.remove(); diag("shaderFail"); return; }
+    var prog = gl.createProgram(); gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { canvas.remove(); diag("linkFail"); return; }
+    gl.useProgram(prog);
+
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    var loc = gl.getAttribLocation(prog, "a");
+    gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+    var uRes = gl.getUniformLocation(prog, "u_res");
+    var uTime = gl.getUniformLocation(prog, "u_time");
+    var uMouse = gl.getUniformLocation(prog, "u_mouse");
+    var uScroll = gl.getUniformLocation(prog, "u_scroll");
+
+    var mouse = { x: 0.5, y: 0.35 }, targetMouse = { x: 0.5, y: 0.35 };
+    var visible = true, raf = null, t0 = performance.now();
+
+    function resize() {
+      var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      var w = Math.max(1, Math.floor(header.clientWidth * dpr * 0.75));
+      var h = Math.max(1, Math.floor(header.clientHeight * dpr * 0.75));
+      if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; gl.viewport(0, 0, w, h); }
+    }
+    function draw(now) {
+      if (!visible) { raf = null; return; }
+      resize();
+      mouse.x += (targetMouse.x - mouse.x) * 0.06;
+      mouse.y += (targetMouse.y - mouse.y) * 0.06;
+      gl.uniform2f(uRes, canvas.width, canvas.height);
+      gl.uniform1f(uTime, (now - t0) / 1000);
+      gl.uniform2f(uMouse, mouse.x * 2 - 1, mouse.y * 2 - 1);
+      gl.uniform1f(uScroll, window.scrollY / Math.max(1, header.clientHeight));
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      raf = requestAnimationFrame(draw);
+    }
+    function start() { if (!raf && visible) raf = requestAnimationFrame(draw); }
+    function stop() { if (raf) { cancelAnimationFrame(raf); raf = null; } }
+
+    header.addEventListener("pointermove", function (e) {
+      var r = header.getBoundingClientRect();
+      targetMouse.x = (e.clientX - r.left) / r.width;
+      targetMouse.y = 1 - (e.clientY - r.top) / r.height;
+    }, { passive: true });
+    document.addEventListener("visibilitychange", function () { visible = !document.hidden; visible ? start() : stop(); });
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (es) { visible = es[0].isIntersecting; visible ? start() : stop(); }, { threshold: 0.01 })
+        .observe(header);
+    }
+    resize(); start();
+    state.hero = true;
+    diag("heroOK");
+  }
+
+  /* ---------------- 2. Hero 文案与按钮 ---------------- */
+  function initHeroText() {
+    var header = document.querySelector("#page-header.full_page");
+    var info = document.querySelector("#site-info");
+    if (!header || !info || header.querySelector(".wave-cta")) return;
+    var cta = document.createElement("div");
+    cta.className = "wave-cta";
+    cta.setAttribute("data-wi", "1");
+    cta.innerHTML = '<a class="primary" href="/portfolio/"><i class="fas fa-briefcase"></i>' + W("hero.c1", "接单合作 · 作品集") + '</a>' +
+                    '<a href="/archives/"><i class="fas fa-water"></i>' + W("hero.c2", "看全部文章") + '</a>' +
+                    '<a href="/about/"><i class="fas fa-user"></i>' + W("hero.c3", "关于我") + '</a>';
+    info.appendChild(cta);
+    var cue = document.createElement("div");
+    cue.className = "wave-scroll-cue";
+    cue.setAttribute("data-wi", "1");
+    header.appendChild(cue);
+  }
+
+  /* ---------------- 3. 首页重构 ---------------- */
+  var FEATURES = [
+    { icon: "fa-wave-square", k: "do.c1", t: "量化交易系统（Go）",
+      d: "策略引擎与行情管线：K 线采集与校验、价格行为结构识别、回测、风控闸门（人工确认 / 额度 / 审计）。" },
+    { icon: "fa-shield-halved", k: "do.c2", t: "AI Agent 工程",
+      d: "多智能体编排、工具调用的权限 scope 与人工确认、本地大模型推理服务——重点让它出错时不造成破坏。" },
+    { icon: "fa-cube", k: "do.c3", t: "业务系统与桌面端",
+      d: "SpringBoot + Vue + MySQL 业务系统；Tauri 2 桌面客户端交付（7.9 MB 绿色包，冷启动 608 ms）。" }
+  ];
+  /* 技术栈：中英双写（左中文右英文） */
+  var STACK = [
+    ["Go", "Go"], ["Rust", "Rust"], ["Java · SpringBoot", "Java · SpringBoot"], ["Python", "Python"],
+    ["Vue 3 + TypeScript", "Vue 3 + TypeScript"], ["MySQL", "MySQL"], ["Redis", "Redis"],
+    ["Linux 运维", "Linux ops"], ["Tauri 2 桌面端", "Tauri 2 desktop"], ["vLLM / 本地推理", "vLLM / local inference"],
+    ["RAG 检索与评测", "RAG retrieval & evals"], ["MCP 工具服务", "MCP tool servers"], ["回测 / 风控闸门", "Backtesting / risk gates"]
+  ];
+
+  function pick(list, n) {
+    var out = [];
+    for (var i = 0; i < list.length && out.length < n; i++) {
+      var el = list[i];
+      var a = el.querySelector("a.article-title") || el.querySelector(".article-title");
+      if (!a) continue;
+      var img = el.querySelector("img");
+      var cover = img ? (img.getAttribute("data-lazy-src") || img.getAttribute("src") || "") : "";
+      if (!cover) {
+        var bgEl = el.querySelector("[style*='background-image']");
+        if (bgEl) {
+          var m = /url\(["']?([^"')]+)["']?\)/.exec(bgEl.getAttribute("style") || "");
+          if (m) cover = m[1];
+        }
+      }
+      var timeEl = el.querySelector("time");
+      var contentEl = el.querySelector(".content") || el.querySelector(".recent-post-info .content");
+      out.push({
+        href: a.getAttribute("href"),
+        title: (a.textContent || "").trim(),
+        cover: cover,
+        date: timeEl ? (timeEl.getAttribute("datetime") || timeEl.textContent || "").slice(0, 10) : "",
+        desc: contentEl ? (contentEl.textContent || "").trim() : ""
+      });
+    }
+    return out;
+  }
+
+  function initHome() {
+    if (state.home) return;
+    var col = document.querySelector("#recent-posts");
+    if (!col) return;
+    document.body.classList.add("wave-home");
+    var listWrap = col.querySelector(".recent-post-items") || col;
+    var items = listWrap.querySelectorAll(".recent-post-item");
+    if (!items.length) return;
+
+    var data = pick(items, 8);
+    var host = col;                 // 关键：插进「文章列」内部，保持两栏 grid 结构
+    var anchor = listWrap;          // 插在原始列表之前
+    var frag = document.createDocumentFragment();
+
+    // 3.1 三件事
+    var sec = document.createElement("section");
+    sec.className = "wave-section wave-reveal";
+    sec.innerHTML = '<div class="wave-sec-title"><i class="fas fa-water"></i>' + W("do.title", "我在做什么") + '</div>' +
+      '<div class="wave-sec-sub">' + W("do.sub", "Go 后端 · 量化系统 · AI Agent · 桌面端交付 — 都是自己动手做过的东西") + '</div>' +
+      '<div class="wave-cards">' +
+      FEATURES.map(function (f) {
+        return '<div class="wave-card"><h3><i class="fas ' + f.icon + '"></i>' + W(f.k + ".t", f.t) + '</h3><p>' + W(f.k + ".d", f.d) + '</p></div>';
+      }).join("") +
+      '</div>';
+    frag.appendChild(sec);
+
+    var div = document.createElement("div");
+    div.className = "wave-divider";
+    frag.appendChild(div);
+
+    // 3.2 精选文章横向卡流
+    if (data.length) {
+      var sec2 = document.createElement("section");
+      sec2.className = "wave-section wave-reveal";
+      sec2.innerHTML = '<div class="wave-sec-title"><i class="fas fa-fire"></i>' + W("idx.title", "最近的写作") + '</div>' +
+        '<div class="wave-sec-sub">' + W("idx.sub", "踩过的坑、实测算出来的数字、能复用的方法") + '</div>' +
+        (isEN() ? '<div class="wave-note"><i class="fas fa-circle-info"></i>' + W("handoff", "") + '</div>' : '') +
+        '<div class="wave-index"></div>';
+      var idx = sec2.querySelector(".wave-index");
+      data.forEach(function (p, i) {
+        var a = document.createElement("a");
+        a.className = "wave-index-row";
+        a.href = p.href;
+        a.innerHTML =
+          '<span class="num">' + ("0" + (i + 1)).slice(-2) + '</span>' +
+          '<span class="ti">' + p.title + '</span>' +
+          (p.desc ? '<span class="de">' + p.desc + '</span>' : '') +
+          '<span class="dt">' + p.date + '</span>';
+        idx.appendChild(a);
+      });
+      frag.appendChild(sec2);
+    }
+
+    // 3.3 折叠：更多文章（原列表的其余条目 + 归档入口）
+    var rest = Array.prototype.slice.call(items, data.length);
+    if (rest.length) {
+      var more = document.createElement("details");
+      more.className = "wave-more wave-section";
+      var rows = rest.map(function (el) {
+        var a = el.querySelector("a.article-title") || el.querySelector(".article-title");
+        if (!a) return "";
+        var t = el.querySelector("time");
+        return '<a href="' + a.getAttribute("href") + '"><time>' +
+          (t ? (t.getAttribute("datetime") || "").slice(0, 10) : "") + '</time><span>' +
+          (a.textContent || "").trim() + '</span></a>';
+      }).join("");
+      more.innerHTML = '<summary><i class="fas fa-archive"></i> ' + W("idx.more", "更早的文章") +
+        (isEN() ? ' (' + rest.length + ')' : '（' + rest.length + ' 篇）') + '</summary>' +
+        '<div class="wave-more-grid">' + rows + '</div>' +
+        '<div class="wave-more-grid" style="margin-top:.6rem"><a href="/archives/"><time>→</time><span>' +
+        W("idx.all", "去归档页看全部") + '</span></a></div>';
+      frag.appendChild(more);
+    }
+
+    // 3.4 收尾：合作 / 接单卡
+    var ctaCard = document.createElement("section");
+    ctaCard.className = "wave-cta-card wave-reveal";
+    ctaCard.innerHTML =
+      '<h3><i class="fas fa-handshake"></i>' + W("cta.h", "合作 / 接单") + '</h3>' +
+      '<p>' + W("cta.p", "正在接<b>远程兼职</b>（UTC+8，可异步交付）：Go 后端 · 数据管道 · AI 集成（本地大模型部署 / RAG / MCP 工具服务）· 全栈业务系统 · 桌面端交付。前两单可半价，换一条真实评价与案例署名授权。") + '</p>' +
+      '<div class="row">' +
+      '<a class="primary" href="/portfolio/"><i class="fas fa-briefcase"></i>' + W("cta.b1", "看作品集与服务说明") + '</a>' +
+      '<a href="mailto:yil72866@gmail.com"><i class="fas fa-envelope"></i>yil72866@gmail.com</a>' +
+      '<a href="https://github.com/PoorThoth"><i class="fab fa-github"></i>GitHub</a>' +
+      '</div>';
+    frag.appendChild(ctaCard);
+
+    // 3.5 技术栈标签
+    var stack = document.createElement("section");
+    stack.className = "wave-section wave-reveal";
+    stack.innerHTML = '<div class="wave-sec-title"><i class="fas fa-layer-group"></i>' + W("tech.title", "技术栈") + '</div>' +
+      '<div class="wave-tags">' +
+      STACK.map(function (pair) { return "<span>" + (isEN() ? pair[1] : pair[0]) + "</span>"; }).join("") +
+      '</div>';
+    frag.appendChild(stack);
+
+    // 8.5 章节编号（01 / 02 …）
+    var titles = frag.querySelectorAll(".wave-sec-title");
+    for (var ti = 0; ti < titles.length; ti++) {
+      var num = document.createElement("span");
+      num.className = "chap";
+      num.textContent = ("0" + (ti + 1)).slice(-2) + " /";
+      titles[ti].insertBefore(num, titles[ti].firstChild);
+    }
+
+    for (var wi = 0; wi < frag.children.length; wi++) frag.children[wi].setAttribute("data-wi", "1");
+    host.insertBefore(frag, anchor);
+    listWrap.classList.add("wave-hidden-list");
+    var pag = col.querySelector(".pagination");
+    if (pag) pag.classList.add("wave-hidden-list");
+    state.home = true;
+  }
+
+  /* ---------------- 4. 阅读进度浪线 ---------------- */
+  function initProgress() {
+    var bar = document.getElementById("wave-progress");
+    if (!document.querySelector("#post") && !document.querySelector(".post-block")) {
+      if (bar) bar.remove();
+      state.prog = false;
+      return;
+    }
+    if (!bar) {
+      bar = document.createElement("div");
+      bar.id = "wave-progress";
+      document.body.appendChild(bar);
+    }
+    if (state.prog) return;
+    state.prog = true;
+    var ticking = false;
+    function upd() {
+      ticking = false;
+      var h = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.transform = "scaleX(" + (h > 0 ? Math.min(1, Math.max(0, window.scrollY / h)) : 0) + ")";
+    }
+    window.addEventListener("scroll", function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(upd); }
+    }, { passive: true });
+    upd();
+  }
+
+  /* ---------------- 5. 点击涟漪 ---------------- */
+  function initFx() {
+    if (state.fx || reduceMotion || (isMobile && !FORCE)) return;
+    state.fx = true;
+    document.addEventListener("pointerdown", function (e) {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      var r = document.createElement("span");
+      r.className = "wave-ripple";
+      r.style.left = e.clientX + "px";
+      r.style.top = e.clientY + "px";
+      document.body.appendChild(r);
+      setTimeout(function () { r.remove(); }, 700);
+    }, { passive: true });
+  }
+
+  /* ---------------- 6. 滚动揭示 ---------------- */
+  function initReveal() {
+    var els = document.querySelectorAll(".wave-reveal:not(.is-in)");
+    if (!els.length) return;
+    if (!("IntersectionObserver" in window)) {
+      for (var i = 0; i < els.length; i++) els[i].classList.add("is-in");
+      return;
+    }
+    // 兜底：1.2 秒后无论有没有触发 IO，全部视为已揭示
+    setTimeout(function () {
+      var all = document.querySelectorAll(".wave-reveal");
+      for (var k = 0; k < all.length; k++) all[k].classList.add("is-in");
+    }, 1200);
+
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -6% 0px" });
+    for (var j = 0; j < els.length; j++) io.observe(els[j]);
+  }
+
+  /* ---------------- 7. 自定义光标（浪沫圈） ---------------- */
+  function initCursor() {
+    if (reduceMotion || isMobile) return;
+    if (!(window.matchMedia && window.matchMedia("(pointer: fine)").matches)) return;
+    if (document.getElementById("wave-cursor")) return;
+    var c = document.createElement("div");
+    c.id = "wave-cursor";
+    document.body.appendChild(c);
+    var x = 0, y = 0, tx = 0, ty = 0, raf = null;
+    function step() {
+      x += (tx - x) * 0.18; y += (ty - y) * 0.18;
+      c.style.transform = "translate(" + x + "px," + y + "px)";
+      raf = (Math.abs(tx - x) + Math.abs(ty - y) > 0.4) ? requestAnimationFrame(step) : null;
+    }
+    document.addEventListener("pointermove", function (e) {
+      tx = e.clientX; ty = e.clientY;
+      c.classList.add("on");
+      if (!raf) raf = requestAnimationFrame(step);
+      var interactive = e.target && e.target.closest && e.target.closest("a, button, summary, .wave-pick, .wave-card");
+      c.classList.toggle("hovering", !!interactive);
+    }, { passive: true });
+    document.addEventListener("pointerleave", function () { c.classList.remove("on"); });
+  }
+
+
+  /* ---------------- 8. 电影感层：视差 / 黑边 / 片头片尾字幕 / 章节号 ---------------- */
+  function initCine() {
+    var header = document.querySelector("#page-header.full_page");
+    if (!header) return;
+    if (header.querySelector(".cine-bar")) return;
+
+    // 8.1 把背景画单独抽成一层，便于视差
+    var bg = header.style.backgroundImage;
+    if (!bg || bg === "none") { try { bg = getComputedStyle(header).backgroundImage; } catch (e) { } }
+    if (bg && bg !== "none") {
+      var art = document.createElement("div");
+      art.className = "wave-art";
+      art.setAttribute("data-wi", "1");
+      art.style.backgroundImage = bg;
+      header.insertBefore(art, header.firstChild);
+      header.style.backgroundImage = "none";
+    }
+
+    // 8.2 上下黑边（宽银幕）
+    ["top", "bottom"].forEach(function (pos) {
+      var b = document.createElement("div");
+      b.className = "cine-bar " + pos;
+      b.setAttribute("data-wi", "1");
+      header.appendChild(b);
+    });
+
+    // 8.3 英文副题 + 片尾式信息行
+    var info = document.querySelector("#site-info");
+    if (info) {
+      if (!info.querySelector(".cine-en")) {
+        var en = document.createElement("span");
+        en.className = "cine-en";
+        en.setAttribute("data-wi", "1");
+        en.textContent = W("hero.kicker", "Ling Guiqian · Backend · Quant Systems · AI Agent");
+        var title = document.querySelector("#site-title");
+        (title || info).appendChild(en);
+
+        var cr = document.createElement("div");
+        cr.className = "cine-credits";
+        cr.setAttribute("data-wi", "1");
+        cr.innerHTML = W("hero.credits", "Go|Quant|AI Agent|Tauri|UTC+8|Open for work").split("|")
+          .map(function (x) { return "<span>" + x + "</span>"; }).join("");
+        info.appendChild(cr);
+      }
+    }
+
+    // 8.4 滚动视差（画、画布、文字、黑边）
+    var raf = null;
+    function onScroll() {
+      if (raf) return;
+      raf = requestAnimationFrame(function () {
+        raf = null;
+        var h = header.clientHeight || 1;
+        var pr = Math.min(1.25, window.scrollY / h);
+        var art = header.querySelector(".wave-art");
+        if (art) art.style.transform = "translate3d(0," + (pr * 20) + "px,0) scale(" + (1 + pr * 0.04) + ")";
+        var c = document.getElementById("wave-hero-canvas");
+        if (c) c.style.transform = "translate3d(0," + (pr * 26) + "px,0) scale(" + (1 + pr * 0.05) + ")";
+        var si = document.querySelector("#site-info");
+        if (si) {
+          si.style.opacity = String(Math.max(0, 1 - pr * 0.85));
+          si.style.transform = "translate3d(0," + (-pr * 26) + "px,0)";
+        }
+        var bars = header.querySelectorAll(".cine-bar");
+        for (var i = 0; i < bars.length; i++) bars[i].style.height = (6.5 + pr * 0.8) + "vh";
+      });
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  }
+
+  /* ---------------- 启动 + pjax 兼容 ---------------- */
+  function diag(extra) {
+    try {
+      document.documentElement.setAttribute("data-wave",
+        "qs=" + QS + "|rm=" + reduceMotion + "|force=" + FORCE + "|mob=" + isMobile + "|" + (extra || ""));
+    } catch (e) { }
+  }
+
+
+  /* ---------- 手机端首屏布局（行内样式，避免被父级布局吃掉）---------- */
+  function applyMobileHero() {
+    try {
+      if (window.innerWidth > 768) return;
+      var cta = document.querySelector("#site-info .wave-cta");
+      if (cta) {
+        cta.style.cssText = "display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;" +
+          "width:86vw;max-width:86vw;margin:1.2rem auto 0;box-sizing:border-box;justify-content:center;";
+        for (var i = 0; i < cta.children.length; i++) {
+          var a = cta.children[i];
+          a.style.justifyContent = "center";
+          a.style.fontSize = ".78rem";
+          a.style.padding = ".5rem .55rem";
+          a.style.whiteSpace = "nowrap";
+          a.style.overflow = "hidden";
+          a.style.textOverflow = "ellipsis";
+        }
+      }
+      var cr = document.querySelector("#site-info .cine-credits");
+      if (cr) {
+        cr.style.cssText = "display:flex;flex-wrap:wrap;justify-content:center;" +
+          "gap:.35rem .85rem;width:86vw;max-width:86vw;margin:.9rem auto 0;" +
+          "font-size:.56rem;letter-spacing:.05em;line-height:1.8;box-sizing:border-box;";
+      }
+      var en = document.querySelector("#site-info .cine-en");
+      if (en) {
+        en.style.cssText = "display:block;width:86vw;max-width:86vw;margin:.45rem auto 0;" +
+          "font-size:.55rem;letter-spacing:.08em;line-height:1.7;white-space:normal;" +
+          "overflow-wrap:anywhere;box-sizing:border-box;";
+      }
+      var ti = document.querySelector("#site-info #site-title");
+      if (ti) { ti.style.fontSize = "clamp(1.7rem, 8.2vw, 2.3rem)"; ti.style.letterSpacing = ".03em"; }
+      // 诊断：把实测几何写进 <html data-mhero>，便于无控制台排查
+      try {
+        var _cta = document.querySelector("#site-info .wave-cta");
+        var _cr = document.querySelector("#site-info .cine-credits");
+        var _si = document.querySelector("#site-info");
+        var _info = { iw: window.innerWidth };
+        if (_si) { var r = _si.getBoundingClientRect(); _info.si = [Math.round(r.left), Math.round(r.width)]; }
+        if (_cta) { var r2 = _cta.getBoundingClientRect(); _info.cta = [Math.round(r2.left), Math.round(r2.width), _cta.children.length]; }
+        if (_cr) { var r3 = _cr.getBoundingClientRect(); _info.cr = [Math.round(r3.left), Math.round(r3.width)]; }
+        document.documentElement.setAttribute("data-mhero", JSON.stringify(_info));
+      } catch (e) {}
+    } catch (e) { /* 静默：手机布局失败不影响桌面 */ }
+  }
+
+  /* 语言切换：清掉本脚本注入的节点后重建（文章正文不动） */
+  function resetInjected() {
+    try {
+      var nodes = document.querySelectorAll("[data-wi]");
+      for (var i = nodes.length - 1; i >= 0; i--) {
+        if (nodes[i].parentNode) nodes[i].parentNode.removeChild(nodes[i]);
+      }
+      var hid = document.querySelectorAll(".wave-hidden-list");
+      for (var j = 0; j < hid.length; j++) hid[j].classList.remove("wave-hidden-list");
+      state.home = false; state.hero = false;
+    } catch (e) { }
+  }
+  window.addEventListener("wave:lang", function () {
+    try { resetInjected(); boot(); } catch (e) { }
+  });
+
+  function boot() {
+    diag("boot");
+    try { initHero(); } catch (e) { diag("heroErr:" + e.message); }
+    try { initHeroText(); } catch (e) { }
+    try {
+      if (!document.querySelector("#recent-posts")) document.body.classList.remove("wave-home");
+      initHome();
+    } catch (e) { }
+    try { initProgress(); } catch (e) { }
+    try { initFx(); } catch (e) { }
+    try { initReveal(); } catch (e) { }
+    try { initCursor(); } catch (e) { }
+    try { initCine(); } catch (e) { }
+    try { applyMobileHero(); } catch (e) { }
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  else boot();
+  document.addEventListener("pjax:complete", function () { state.home = false; boot(); });
+  window.addEventListener("load", boot);
+})();
+</script></body></html>

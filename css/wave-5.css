@@ -1,0 +1,93 @@
+<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>/* ============================================================
+   wave-5.css —— 语言切换按钮 + 英文提示条
+   ============================================================ */
+
+/* 顶部导航里的「中 / EN」切换 */
+#wave-lang-btn {
+  position: fixed;
+  top: 0.75rem;
+  right: 1.1rem;
+  z-index: 1001;
+  display: inline-flex;
+  align-items: center;
+  gap: .32rem;
+  padding: .28rem .62rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font: inherit;
+  font-size: .72rem;
+  line-height: 1;
+  letter-spacing: .06em;
+  color: #EAF1F8;
+  background: rgba(16, 30, 46, .5);
+  border: 1px solid rgba(175, 198, 216, .32);
+  backdrop-filter: blur(10px) saturate(1.2);
+  transition: background .25s ease, border-color .25s ease, transform .25s ease, color .25s ease;
+}
+#wave-lang-btn:hover {
+  background: rgba(201, 160, 99, .92);
+  border-color: transparent;
+  color: #16283C;
+  transform: translateY(-1px);
+}
+#wave-lang-btn span {
+  opacity: .55;
+  transition: opacity .25s ease;
+}
+#wave-lang-btn span[aria-current] {
+  opacity: 1;
+  font-weight: 700;
+}
+#wave-lang-btn i {
+  width: 1px;
+  height: .78em;
+  background: currentColor;
+  opacity: .35;
+}
+/* 亮色模式下也看得见 */
+html:not([data-theme="dark"]) #wave-lang-btn {
+  color: #22344A;
+  background: rgba(247, 243, 232, .72);
+  border-color: rgba(34, 52, 74, .22);
+}
+/* 窄屏：贴到汉堡按钮左边，不压住内容 */
+@media (max-width: 768px) {
+  #wave-lang-btn { top: .55rem; right: 3.2rem; font-size: .68rem; padding: .24rem .5rem; }
+}
+
+/* 英文模式下的提示条（告诉读者正文是中文） */
+.wave-note {
+  display: flex;
+  align-items: flex-start;
+  gap: .5rem;
+  margin: .7rem 0 0;
+  padding: .6rem .85rem;
+  border-radius: 10px;
+  font-size: .8rem;
+  line-height: 1.7;
+  color: #D9E5F0;
+  background: rgba(124, 157, 156, .16);
+  border-left: 3px solid var(--w-ochre, #C9A063);
+}
+.wave-note i { margin-top: .18em; color: var(--w-ochre, #C9A063); }
+html:not([data-theme="dark"]) .wave-note { color: #2A3A4C; background: rgba(124, 157, 156, .18); }
+
+/* 英文模式：隐藏打字机副标题，显示静态英文行 */
+#site-subtitle.wave-hide-typed #subtitle { display: none !important; }
+#site-subtitle .wave-sub-en {
+  display: block;
+  font-size: .95rem;
+  letter-spacing: .04em;
+  opacity: .92;
+}
+/* 英文公告卡 */
+.card-announcement .wave-ann-h {
+  margin: 0 0 .5rem;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.05rem;
+  background: linear-gradient(90deg, #6fcde6, #cc6de6 45%, #e66b6d);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

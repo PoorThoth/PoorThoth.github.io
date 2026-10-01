@@ -7,84 +7,175 @@
 <meta name="description" content="Full-stack engineer: Go/Java backends, quant trading systems, AI-integrated products. Independent delivery, complete source, documented.">
 <style>
   :root{
-    --bg:#020617; --panel:rgba(15,23,42,.55); --line:#1e293b; --ink:#e2e8f0;
-    --dim:#94a3b8; --cyan:#22d3ee; --emerald:#34d399; --violet:#a78bfa; --amber:#fbbf24;
+    --bg:#12202F; --bg2:#182B3E; --bg3:#1E3A54;
+    --line:rgba(175,198,216,.18); --line2:rgba(175,198,216,.10);
+    --ink:#F3EEE1; --dim:#BACBDB; --dim2:#93A9BE;
+    --blue:#2B4C77; --blue2:#496C8D; --teal:#7C9D9C; --ochre:#C9A063; --cinnabar:#A8483A;
+    --serif:"Source Han Serif SC","Noto Serif SC","Songti SC",SimSun,Georgia,"Times New Roman",serif;
+    --sans:"Inter",-apple-system,"Segoe UI","Noto Sans SC",system-ui,sans-serif;
   }
   *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
   body{
-    background:var(--bg); color:var(--ink); min-height:100vh; padding:2.5rem 1.25rem 4rem;
-    font-family:'Inter',-apple-system,'Segoe UI','Noto Sans SC',system-ui,sans-serif;
-    line-height:1.65; -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(1200px 700px at 12% -8%, rgba(43,76,119,.55), transparent 62%),
+      radial-gradient(900px 600px at 100% 0%, rgba(124,157,156,.22), transparent 60%),
+      var(--bg);
+    color:var(--ink); min-height:100vh; font-family:var(--sans);
+    line-height:1.72; -webkit-font-smoothing:antialiased; overflow-x:hidden;
   }
-  .wrap{max-width:1080px;margin:0 auto}
-  .mono{font-family:ui-monospace,'JetBrains Mono',Consolas,monospace}
+  /* 胶片颗粒 + 暗角（与博客同一套） */
+  body::before{
+    content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.42'/></svg>");
+    opacity:.3; mix-blend-mode:overlay; animation:grain 1.1s steps(3) infinite;
+  }
+  @keyframes grain{0%{transform:translate(0,0)}33%{transform:translate(-2%,1%)}66%{transform:translate(1%,-2%)}100%{transform:translate(0,0)}}
+  body::after{
+    content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:radial-gradient(120% 100% at 50% 42%, transparent 58%, rgba(4,10,18,.5) 100%);
+  }
+  .wrap{max-width:1120px;margin:0 auto;position:relative;z-index:2;padding:0 1.25rem 4rem}
+  .mono{font-family:ui-monospace,"JetBrains Mono",Consolas,monospace}
 
-  /* header */
-  .top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap}
-  .brand{display:flex;align-items:center;gap:.7rem;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
-  .dot{width:11px;height:11px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px var(--cyan);animation:pulse 2s infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-  .lang{border:1px solid var(--line);background:transparent;color:var(--dim);border-radius:999px;
-    padding:.35rem .9rem;font-size:.78rem;cursor:pointer;font-family:inherit}
-  .lang:hover{color:var(--ink);border-color:#334155}
+  /* ---------- 顶部导航 ---------- */
+  .nav{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;
+    padding:1.1rem 0 0}
+  .brand{display:flex;align-items:center;gap:.65rem;font-size:.76rem;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--dim)}
+  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--ochre);
+    box-shadow:0 0 0 4px rgba(201,160,99,.18);animation:pulse 2.4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.82)}}
+  .nav-right{display:flex;align-items:center;gap:.6rem}
+  .navlink{color:var(--dim);text-decoration:none;font-size:.82rem;border-bottom:1px solid transparent;
+    transition:.25s}
+  .navlink:hover{color:var(--ochre);border-color:var(--ochre)}
+  .lang{border:1px solid var(--line);background:rgba(16,30,46,.5);color:var(--ink);
+    border-radius:999px;padding:.32rem .82rem;font-size:.76rem;cursor:pointer;font-family:inherit;
+    backdrop-filter:blur(8px);transition:.25s}
+  .lang:hover{background:var(--ochre);color:#16283C;border-color:transparent;transform:translateY(-1px)}
 
-  h1{font-size:clamp(1.7rem,4.6vw,2.6rem);line-height:1.25;font-weight:700;letter-spacing:-.02em;margin:1.5rem 0 .9rem}
-  h1 .hl{color:var(--cyan)}
-  .lede{color:var(--dim);font-size:1.02rem;max-width:70ch}
-  .tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.4rem}
-  .tag{border:1px solid var(--line);border-radius:999px;padding:.32rem .8rem;font-size:.78rem;color:var(--dim);background:rgba(15,23,42,.5)}
-  .tag.k{color:var(--cyan);border-color:rgba(34,211,238,.35)}
-  .tag.g{color:var(--emerald);border-color:rgba(52,211,153,.35)}
-  .tag.v{color:var(--violet);border-color:rgba(167,139,250,.35)}
+  /* ---------- Hero：宽银幕 + 背景画 ---------- */
+  .hero{position:relative;margin:1.6rem 0 0;padding:4.4rem 2.2rem 4rem;border-radius:18px;
+    overflow:hidden;border:1px solid var(--line);isolation:isolate}
+  .hero > *:not(.art){position:relative;z-index:2}
+  .hero .art{position:absolute;inset:-8% -3%;z-index:0;background:url("/img/wave-hd.jpg") center 42%/cover no-repeat;
+    filter:brightness(.96) saturate(1.06) contrast(1.02);animation:kb 32s ease-in-out infinite alternate}
+  @keyframes kb{from{transform:scale(1.02) translateY(0)}to{transform:scale(1.12) translateY(-1.5%)}}
+  .hero::before{content:"";position:absolute;inset:0;z-index:1;
+    background:linear-gradient(90deg, rgba(9,17,28,.94) 0%, rgba(9,17,28,.66) 46%, rgba(9,17,28,.9) 100%),
+               linear-gradient(180deg, rgba(9,17,28,.5) 0%, rgba(9,17,28,.26) 38%, rgba(9,17,28,.78) 100%),
+               radial-gradient(110% 80% at 20% 0%, rgba(43,76,119,.45), transparent 60%)}
+  .kicker{display:flex;align-items:center;gap:.7rem;text-shadow:0 2px 10px rgba(4,10,18,.8);font-size:.7rem;letter-spacing:.34em;
+    text-transform:uppercase;color:rgba(243,238,225,.72);margin-bottom:1.1rem}
+  .kicker i{width:34px;height:1px;background:var(--ochre);display:inline-block}
+  h1{font-family:var(--serif);font-size:clamp(1.9rem,5vw,3.2rem);line-height:1.28;font-weight:700;
+    letter-spacing:.02em;margin:0 0 1rem;text-shadow:0 6px 30px rgba(4,10,18,.7)}
+  h1 .hl{color:var(--ochre)}
+  .lede{color:rgba(243,238,225,.95);font-size:1.02rem;max-width:74ch;text-shadow:0 2px 14px rgba(4,10,18,.8)}
+  .credits{position:relative;display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;margin:1.4rem 0 0;
+    font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(243,238,225,.6)}
+  .credits span::before{content:"—";margin-right:.5rem;opacity:.5}
 
-  .cta{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.8rem}
-  .btn{display:inline-block;border-radius:.6rem;padding:.7rem 1.15rem;font-size:.88rem;text-decoration:none;
-    border:1px solid var(--line);color:var(--ink);background:var(--panel);transition:.15s}
-  .btn:hover{border-color:#475569;transform:translateY(-1px)}
-  .btn.primary{background:var(--cyan);color:#00131a;border-color:var(--cyan);font-weight:600}
+  .tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.5rem}
+  .tag{border:1px solid var(--line);border-radius:999px;padding:.3rem .78rem;font-size:.76rem;
+    color:var(--dim);background:rgba(16,30,46,.55);backdrop-filter:blur(6px)}
+  .tag.k{color:#D9E6F2;border-color:rgba(73,108,141,.55)}
+  .tag.g{color:#9FC4C2;border-color:rgba(124,157,156,.5)}
+  .tag.v{color:#E0B573;border-color:rgba(201,160,99,.45)}
 
-  /* stats */
-  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.9rem;margin:2.6rem 0 0}
-  .stat{background:var(--panel);border:1px solid var(--line);border-radius:.85rem;padding:1rem 1.1rem}
-  .stat b{display:block;font-size:1.35rem;color:var(--cyan);font-weight:700}
-  .stat span{font-size:.8rem;color:var(--dim)}
+  .cta{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.8rem}
+  .btn{display:inline-flex;align-items:center;gap:.45rem;border-radius:999px;padding:.66rem 1.2rem;
+    font-size:.86rem;text-decoration:none;border:1px solid var(--line);color:var(--ink);
+    background:rgba(16,30,46,.6);backdrop-filter:blur(8px);transition:.28s}
+  .btn:hover{border-color:var(--ochre);transform:translateY(-2px);color:#fff}
+  .btn.primary{background:var(--ochre);color:#16283C;border-color:transparent;font-weight:600;
+    box-shadow:0 10px 26px rgba(201,160,99,.28)}
+  .btn.primary:hover{background:#D9B27A;color:#16283C}
 
-  h2{font-size:1.12rem;margin:3.2rem 0 1.1rem;display:flex;align-items:center;gap:.6rem}
-  h2:before{content:"";width:4px;height:1.05rem;background:var(--cyan);border-radius:2px}
+  /* ---------- 数据 ---------- */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.85rem;margin:2.4rem 0 0}
+  .stat{background:linear-gradient(180deg, rgba(30,58,84,.55), rgba(18,32,47,.6));
+    border:1px solid var(--line2);border-radius:14px;padding:1.05rem 1.15rem;
+    box-shadow:0 12px 30px rgba(0,0,0,.22);transition:.3s}
+  .stat:hover{transform:translateY(-3px);border-color:rgba(201,160,99,.42)}
+  .stat b{display:block;font-family:var(--serif);font-size:1.6rem;color:var(--ochre);font-weight:700;line-height:1.2}
+  .stat span{font-size:.79rem;color:var(--dim2);line-height:1.6;display:block;margin-top:.3rem}
 
-  /* case cards */
+  /* ---------- 章节标题（编号 + 发丝线）---------- */
+  .sec{display:flex;align-items:center;gap:.85rem;margin:3.4rem 0 1.2rem}
+  .sec .no{font-family:ui-monospace,Consolas,monospace;font-size:.82rem;letter-spacing:.2em;color:var(--ochre)}
+  .sec h2{font-family:var(--serif);font-size:1.28rem;font-weight:700;letter-spacing:.02em;margin:0}
+  .sec i{flex:1;height:1px;background:linear-gradient(90deg, var(--line), transparent)}
+  /* 青海波分隔 */
+  .seigaiha{height:26px;margin:2.2rem 0 0;opacity:.5;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='26' viewBox='0 0 56 26'><g fill='none' stroke='%237C9D9C' stroke-width='1'><path d='M0 26a28 28 0 0 1 56 0'/><path d='M8 26a20 20 0 0 1 40 0'/><path d='M16 26a12 12 0 0 1 24 0'/><path d='M-14 26a28 28 0 0 1 56 0'/><path d='M-6 26a20 20 0 0 1 40 0'/><path d='M2 26a12 12 0 0 1 24 0'/><path d='M42 26a28 28 0 0 1 56 0'/><path d='M50 26a20 20 0 0 1 40 0'/><path d='M58 26a12 12 0 0 1 24 0'/></g></svg>");
+    background-repeat:repeat-x;background-position:center bottom}
+
+  /* ---------- 案例卡 ---------- */
   .cases{display:grid;gap:1rem}
-  .case{background:var(--panel);border:1px solid var(--line);border-radius:1rem;padding:1.35rem 1.4rem;transition:.15s}
-  .case:hover{border-color:#334155}
+  .case{position:relative;overflow:hidden;background:linear-gradient(180deg, rgba(30,58,84,.5), rgba(18,32,47,.66));
+    border:1px solid var(--line2);border-radius:16px;padding:1.4rem 1.45rem;
+    box-shadow:0 14px 34px rgba(0,0,0,.24);transition:transform .35s cubic-bezier(.16,1,.3,1), border-color .35s}
+  .case::after{content:"";position:absolute;top:0;left:-60%;width:45%;height:100%;
+    background:linear-gradient(100deg, transparent, rgba(243,238,225,.09), transparent);
+    transform:skewX(-14deg);transition:left .9s cubic-bezier(.16,1,.3,1)}
+  .case:hover{transform:translateY(-4px);border-color:rgba(201,160,99,.42)}
+  .case:hover::after{left:120%}
   .case header{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;align-items:baseline}
-  .case h3{font-size:1.02rem}
-  .case .role{font-size:.75rem;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
-  .case p{color:var(--dim);font-size:.9rem;margin:.7rem 0 .9rem}
-  .chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.85rem}
-  .chip{font-size:.72rem;color:var(--violet);border:1px solid rgba(167,139,250,.3);border-radius:.35rem;padding:.18rem .5rem}
-  .res{display:flex;gap:1.4rem;flex-wrap:wrap;font-size:.82rem;color:var(--dim);border-top:1px dashed var(--line);padding-top:.85rem}
-  .res b{color:var(--emerald)}
-  .case a.dg{color:var(--cyan);text-decoration:none;font-size:.82rem}
-  .case a.dg:hover{text-decoration:underline}
+  .case h3{font-family:var(--serif);font-size:1.06rem;font-weight:700;letter-spacing:.01em}
+  .role{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);
+    border:1px solid rgba(124,157,156,.4);border-radius:999px;padding:.2rem .6rem;white-space:nowrap}
+  .case p{color:var(--dim);font-size:.92rem;margin-top:.7rem}
+  .chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.95rem}
+  .chip{font-size:.72rem;font-family:ui-monospace,Consolas,monospace;color:#CBD9E6;
+    border:1px solid var(--line2);border-radius:6px;padding:.18rem .5rem;background:rgba(16,30,46,.5)}
+  .res{display:grid;gap:.35rem;margin-top:.9rem;padding-top:.85rem;border-top:1px dashed var(--line2)}
+  .res span{font-size:.85rem;color:var(--dim);display:block}
+  .res b{color:var(--ochre)}
+  .dg{color:var(--ochre) !important;font-size:.85rem}
 
-  /* services */
-  table{width:100%;border-collapse:collapse;font-size:.88rem;background:var(--panel);border:1px solid var(--line);border-radius:.85rem;overflow:hidden}
-  th,td{padding:.8rem .95rem;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
-  th{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);background:rgba(2,6,23,.6)}
-  tr:last-child td{border-bottom:none}
-  td.price{color:var(--amber);white-space:nowrap;font-weight:600}
+  /* ---------- 表格 ---------- */
+  table{width:100%;border-collapse:collapse;font-size:.9rem;
+    background:linear-gradient(180deg, rgba(30,58,84,.35), rgba(18,32,47,.5));
+    border:1px solid var(--line2);border-radius:14px;overflow:hidden}
+  th{text-align:left;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim2);
+    font-weight:600;padding:.85rem 1rem;border-bottom:1px solid var(--line);background:rgba(9,17,28,.4)}
+  td{padding:.9rem 1rem;border-bottom:1px solid var(--line2);color:var(--dim);vertical-align:top}
+  tr:last-child td{border-bottom:0}
+  tr:hover td{background:rgba(43,76,119,.18)}
+  td.price{font-family:ui-monospace,Consolas,monospace;color:var(--ochre);white-space:nowrap;font-size:.86rem}
 
-  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-top:1rem}
-  .box{background:var(--panel);border:1px solid var(--line);border-radius:.85rem;padding:1.1rem 1.2rem}
-  .box h4{font-size:.9rem;margin-bottom:.6rem;color:var(--ink)}
-  .box ul{list-style:none;font-size:.86rem;color:var(--dim)}
-  .box li{padding-left:1.1rem;position:relative;margin-bottom:.4rem}
-  .box li:before{content:"→";position:absolute;left:0;color:var(--cyan);font-size:.8rem}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;margin-top:1.6rem}
+  .box{background:linear-gradient(180deg, rgba(30,58,84,.45), rgba(18,32,47,.6));
+    border:1px solid var(--line2);border-radius:16px;padding:1.3rem 1.35rem}
+  .box h4{font-family:var(--serif);font-size:1rem;margin-bottom:.7rem;color:var(--ink)}
+  .box ul{list-style:none;display:grid;gap:.5rem}
+  .box li{position:relative;padding-left:1.1rem;font-size:.87rem;color:var(--dim)}
+  .box li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;
+    background:var(--teal)}
+  .box:nth-child(2) li::before{background:var(--cinnabar)}
 
-  footer{margin-top:3.5rem;border-top:1px solid var(--line);padding-top:1.5rem;font-size:.85rem;color:var(--dim);
-    display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
-  footer a{color:var(--cyan);text-decoration:none}
+  footer{margin-top:3.2rem;padding-top:1.6rem;border-top:1px solid var(--line2);
+    display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-size:.82rem;color:var(--dim2)}
+  footer a{color:var(--ochre);text-decoration:none}
   footer a:hover{text-decoration:underline}
+
+  /* 进场：遮帘式（与博客一致，但更轻） */
+  .reveal{opacity:1}
+  @media (prefers-reduced-motion: no-preference){
+    .reveal{animation:rise .8s cubic-bezier(.16,1,.3,1) both}
+    @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  }
+  @media (max-width:768px){
+    .wrap{padding:0 1rem 3rem}
+    .hero{padding:2.4rem 1.15rem 2.2rem;border-radius:14px}
+    .hero .art{background-image:url("/img/wave-hd-mobile.jpg");animation:none}
+    h1{font-size:clamp(1.6rem,7.6vw,2.2rem)}
+    .stats{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+    table{display:block;overflow-x:auto;white-space:nowrap}
+    .sec h2{font-size:1.12rem}
+  }
 </style>
 </head>
 <body>
@@ -101,11 +192,18 @@
 </noscript>
 <div class="wrap">
 
-  <div class="top">
+  <div class="nav reveal">
     <div class="brand"><span class="dot"></span><span>Available for contract work</span></div>
+    <div class="nav-right">
+      <a class="navlink" href="/">← Blog</a>
+    </div>
+  </div>
     <button class="lang" id="lang" onclick="toggleLang()">EN</button>
   </div>
 
+  <section class="hero reveal">
+    <div class="art" aria-hidden="true"></div>
+    <div class="kicker"><i></i><span class="t" data-zh="可接远程兼职 · 异步交付 · UTC+8" data-en="Open for remote contract work · async · UTC+8">可接远程兼职 · 异步交付 · UTC+8</span></div>
   <h1>
     <span class="t" data-zh="全栈工程 · 量化交易系统 · AI 产品化" data-en="Full-Stack Engineering · Quant Trading Systems · AI Products">全栈工程 · 量化交易系统 · AI 产品化</span>
   </h1>
@@ -126,6 +224,10 @@
     <a class="btn t" href="#services" data-zh="看我能接什么活" data-en="What I can build for you">看我能接什么活</a>
   </div>
 
+  </section>
+
+  <div class="credits reveal"><span class="mono">Go</span><span class="mono">Quant Systems</span><span class="mono">AI Integration</span><span class="mono">Vue · SpringBoot</span><span class="mono">UTC+8</span><span class="mono">Open for work</span></div>
+
   <div class="stats">
     <div class="stat"><b>3</b><span class="t" data-zh="个商业项目独立交付（全栈）" data-en="commercial systems delivered end-to-end">个商业项目独立交付（全栈）</span></div>
     <div class="stat"><b>60+</b><span class="t" data-zh="后端接口 / 单项目 20+ 张表 / 30+ 页面" data-en="backend APIs in one project · 20+ tables · 30+ pages">后端接口 / 单项目 20+ 张表 / 30+ 页面</span></div>
@@ -133,7 +235,8 @@
     <div class="stat"><b>3s</b><span class="t" data-zh="AI 多模型编排首屏（形象/语音/对话三模型）" data-en="first paint with 3 AI models orchestrated">AI 多模型编排首屏（形象/语音/对话三模型）</span></div>
   </div>
 
-  <h2><span class="t" data-zh="交付案例" data-en="Selected Work">交付案例</span></h2>
+  <div class="seigaiha"></div>
+  <div class="sec reveal"><span class="no">01 /</span><span class="t" data-zh="交付案例" data-en="Selected Work">交付案例</span><i></i></div>
   <div class="cases">
 
     <article class="case">
@@ -205,7 +308,8 @@
 
   </div>
 
-  <h2 id="services"><span class="t" data-zh="我能接什么活（含起价）" data-en="What I can build (and what it costs)">我能接什么活（含起价）</span></h2>
+  <div class="seigaiha"></div>
+  <div class="sec reveal"><span class="no">02 /</span><span class="t" data-zh="我能接什么活（含起价）" data-en="What I can build (and what it costs)">我能接什么活（含起价）</span><i></i></div>
   <table>
     <tr>
       <th class="t" data-zh="方向" data-en="Engagement">方向</th>
@@ -273,14 +377,24 @@
 </div>
 
 <script>
-  var LANG = /(^|[#&])en\b/i.test(location.hash) ? 'en' : 'zh';
+  var LANG = (function(){
+    var h = (location.hash || '').replace('#','');
+    var q = /[?&]lang=(zh|en)/.exec(location.search || '');
+    if (h === 'en' || h === 'zh') return h;
+    if (q && q[1]) return q[1];
+    try { var s = localStorage.getItem('wave-lang'); if (s === 'en' || s === 'zh') return s; } catch(e){}
+    try { if ((navigator.language || '').toLowerCase().indexOf('zh') !== 0) return 'en'; } catch(e){}
+    return 'zh';
+  })();
   function applyLang(){
+    try { localStorage.setItem('wave-lang', LANG); } catch(e){}
     document.documentElement.lang = LANG === 'zh' ? 'zh-CN' : 'en';
     document.querySelectorAll('.t').forEach(function(el){
       var v = el.getAttribute(LANG === 'zh' ? 'data-zh' : 'data-en');
       if (v !== null) el.innerHTML = v;
     });
-    document.getElementById('lang').textContent = LANG === 'zh' ? 'EN' : '中文';
+    var lb = document.getElementById('lang');
+    if (lb) { lb.textContent = LANG === 'zh' ? 'EN' : '中文'; lb.title = LANG === 'zh' ? 'Switch to English' : '切换为中文'; }
   }
   function toggleLang(){ LANG = (LANG === 'zh') ? 'en' : 'zh'; applyLang(); }
   applyLang();
