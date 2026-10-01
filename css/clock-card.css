@@ -73,7 +73,8 @@
   flex: 1;
   padding: 0.3rem 0.1rem;
   border-radius: 6px;
-  background: var(--btn-hover-color, rgba(128, 128, 128, 0.08));
+  background: rgba(43, 76, 119, 0.10);
+  color: inherit;
 }
 
 .card-clock-own .own-city {

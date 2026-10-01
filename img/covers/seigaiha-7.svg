@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+<defs>
+ <linearGradient id="g" x1="0" y1="0" x2="0.6" y2="1"><stop offset="0%" stop-color="#2B4C77"/><stop offset="100%" stop-color="#16283C"/></linearGradient>
+ <radialGradient id="v" cx="0.3" cy="0.25" r="0.9"><stop offset="0%" stop-color="#fff" stop-opacity="0.16"/><stop offset="100%" stop-color="#000" stop-opacity="0.30"/></radialGradient>
+ <pattern id="sg" width="120" height="60" patternUnits="userSpaceOnUse" patternTransform="rotate(0) scale(1)">
+   <g fill="none" stroke="#38567B" stroke-opacity="0.5" stroke-width="1.6">
+     <circle cx="60" cy="60" r="58"/><circle cx="60" cy="60" r="44"/><circle cx="60" cy="60" r="30"/><circle cx="60" cy="60" r="16"/>
+     <circle cx="0" cy="60" r="58"/><circle cx="0" cy="60" r="44"/><circle cx="0" cy="60" r="30"/><circle cx="0" cy="60" r="16"/>
+     <circle cx="120" cy="60" r="58"/><circle cx="120" cy="60" r="44"/><circle cx="120" cy="60" r="30"/><circle cx="120" cy="60" r="16"/>
+   </g>
+   <g fill="none" stroke="#38567B" stroke-opacity="0.26" stroke-width="1.2">
+     <circle cx="60" cy="30" r="58"/><circle cx="60" cy="30" r="44"/><circle cx="60" cy="30" r="30"/>
+     <circle cx="0" cy="30" r="58"/><circle cx="0" cy="30" r="44"/><circle cx="0" cy="30" r="30"/>
+     <circle cx="120" cy="30" r="58"/><circle cx="120" cy="30" r="44"/><circle cx="120" cy="30" r="30"/>
+   </g>
+ </pattern>
+</defs>
+<rect width="1200" height="675" fill="url(#g)"/>
+<rect width="1200" height="675" fill="url(#v)"/><g fill="none" stroke="#DFDCBA" stroke-opacity="0.85" stroke-width="3"><path d="M120,470 C260,420 380,520 520,470 C660,420 780,520 920,470"/></g><g fill="none" stroke="#AFC6D8" stroke-opacity="0.45" stroke-width="2"><path d="M180,530 C320,485 440,575 580,530 C720,485 840,575 980,530"/></g><g fill="none" stroke="#7C9D9C" stroke-opacity="0.22" stroke-width="1.6"><path d="M240,585 C380,545 500,625 640,585 C780,545 900,625 1040,585"/></g></svg>
