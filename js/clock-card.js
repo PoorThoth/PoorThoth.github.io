@@ -45,12 +45,22 @@
     return d;
   }
 
+  function markErr(msg) {
+    try {
+      var e = document.getElementById("clock-card-diag") || document.createElement("div");
+      e.id = "clock-card-diag";
+      e.style.cssText = "position:fixed;left:8px;bottom:8px;z-index:99999;background:#c00;color:#fff;padding:6px 10px;font-size:12px;border-radius:6px";
+      e.textContent = "[clock-card] " + msg;
+      document.body.appendChild(e);
+    } catch (x) {}
+  }
+
   function mount() {
     if (document.querySelector(".card-clock-own")) return; // 防重复
     var host = document.querySelector(".sticky_layout") ||
                document.querySelector("#aside-content .card-widget") ||
                document.querySelector("#aside-content");
-    if (!host) return;
+    if (!host) { markErr("找不到挂载点 sticky_layout / #aside-content（readyState=" + document.readyState + "）"); return; }
     host.insertBefore(buildCard(), host.firstChild);
     tick();
     loadWeather();
@@ -121,11 +131,16 @@
   }
 
   // 首次加载 + pjax 切换后都尝试挂载
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", mount);
-  } else {
-    mount();
+  function safeMount() {
+    try { mount(); } catch (e) { markErr("异常: " + (e && e.message ? e.message : e)); }
   }
-  document.addEventListener("pjax:complete", mount);
-  window.addEventListener("load", mount);
+  try {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", safeMount);
+    } else {
+      safeMount();
+    }
+    document.addEventListener("pjax:complete", safeMount);
+    window.addEventListener("load", safeMount);
+  } catch (e) { markErr("初始化异常: " + (e && e.message ? e.message : e)); }
 })();
