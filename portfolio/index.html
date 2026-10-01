@@ -39,10 +39,19 @@
   .mono{font-family:ui-monospace,"JetBrains Mono",Consolas,monospace}
 
   /* ---------- 顶部导航 ---------- */
-  .nav{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;
-    padding:1.1rem 0 0}
-  .brand{display:flex;align-items:center;gap:.65rem;font-size:.76rem;letter-spacing:.2em;
-    text-transform:uppercase;color:var(--dim)}
+  /* 通栏 sticky 顶栏：左＝语言切换+品牌，右＝回博客；不再缩在内容列中间 */
+  .nav{
+    position:sticky; top:0; z-index:30;
+    display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;
+    margin:0 calc(50% - 50vw);
+    padding:.8rem max(1.4rem, calc(50vw - 560px)) .8rem;
+    background:rgba(9,17,28,.74);
+    backdrop-filter:blur(14px) saturate(1.15);
+    border-bottom:1px solid rgba(175,198,216,.12);
+  }
+  .nav-left{display:flex;align-items:center;gap:.9rem;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:.6rem;font-size:.74rem;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--dim);white-space:nowrap}
   .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--ochre);
     box-shadow:0 0 0 4px rgba(201,160,99,.18);animation:pulse 2.4s ease-in-out infinite}
   @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.82)}}
@@ -56,7 +65,7 @@
   .lang:hover{background:var(--ochre);color:#16283C;border-color:transparent;transform:translateY(-1px)}
 
   /* ---------- Hero：宽银幕 + 背景画 ---------- */
-  .hero{position:relative;margin:1.6rem 0 0;padding:4.4rem 2.2rem 4rem;border-radius:18px;
+  .hero{position:relative;margin:1.9rem 0 0;padding:4.4rem 2.2rem 4rem;border-radius:18px;
     overflow:hidden;border:1px solid var(--line);isolation:isolate}
   .hero > *:not(.art){position:relative;z-index:2}
   .hero .art{position:absolute;inset:-8% -3%;z-index:0;background:url("/img/wave-hd.jpg") center 42%/cover no-repeat;
@@ -193,11 +202,11 @@
 <div class="wrap">
 
   <div class="nav reveal">
-    <div class="brand"><span class="dot"></span><span>Available for contract work</span></div>
-    <div class="nav-right">
-      <a class="navlink" href="/">← Blog</a>
+    <div class="nav-left">
       <button class="lang" id="lang" onclick="toggleLang()">EN</button>
+      <div class="brand"><span class="dot"></span><span>Available for contract work</span></div>
     </div>
+    <a class="navlink" href="/">← Blog</a>
   </div>
   </div>
 
