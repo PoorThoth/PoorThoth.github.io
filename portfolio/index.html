@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>凌贵黔 (Ling Guiqian) — Full-Stack · Quant Systems · AI Integration</title>
+<meta name="description" content="Full-stack engineer: Go/Java backends, quant trading systems, AI-integrated products. Independent delivery, complete source, documented.">
+<style>
+  :root{
+    --bg:#020617; --panel:rgba(15,23,42,.55); --line:#1e293b; --ink:#e2e8f0;
+    --dim:#94a3b8; --cyan:#22d3ee; --emerald:#34d399; --violet:#a78bfa; --amber:#fbbf24;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:var(--bg); color:var(--ink); min-height:100vh; padding:2.5rem 1.25rem 4rem;
+    font-family:'Inter',-apple-system,'Segoe UI','Noto Sans SC',system-ui,sans-serif;
+    line-height:1.65; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto}
+  .mono{font-family:ui-monospace,'JetBrains Mono',Consolas,monospace}
+
+  /* header */
+  .top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:.7rem;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+  .dot{width:11px;height:11px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px var(--cyan);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .lang{border:1px solid var(--line);background:transparent;color:var(--dim);border-radius:999px;
+    padding:.35rem .9rem;font-size:.78rem;cursor:pointer;font-family:inherit}
+  .lang:hover{color:var(--ink);border-color:#334155}
+
+  h1{font-size:clamp(1.7rem,4.6vw,2.6rem);line-height:1.25;font-weight:700;letter-spacing:-.02em;margin:1.5rem 0 .9rem}
+  h1 .hl{color:var(--cyan)}
+  .lede{color:var(--dim);font-size:1.02rem;max-width:70ch}
+  .tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.4rem}
+  .tag{border:1px solid var(--line);border-radius:999px;padding:.32rem .8rem;font-size:.78rem;color:var(--dim);background:rgba(15,23,42,.5)}
+  .tag.k{color:var(--cyan);border-color:rgba(34,211,238,.35)}
+  .tag.g{color:var(--emerald);border-color:rgba(52,211,153,.35)}
+  .tag.v{color:var(--violet);border-color:rgba(167,139,250,.35)}
+
+  .cta{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.8rem}
+  .btn{display:inline-block;border-radius:.6rem;padding:.7rem 1.15rem;font-size:.88rem;text-decoration:none;
+    border:1px solid var(--line);color:var(--ink);background:var(--panel);transition:.15s}
+  .btn:hover{border-color:#475569;transform:translateY(-1px)}
+  .btn.primary{background:var(--cyan);color:#00131a;border-color:var(--cyan);font-weight:600}
+
+  /* stats */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.9rem;margin:2.6rem 0 0}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:.85rem;padding:1rem 1.1rem}
+  .stat b{display:block;font-size:1.35rem;color:var(--cyan);font-weight:700}
+  .stat span{font-size:.8rem;color:var(--dim)}
+
+  h2{font-size:1.12rem;margin:3.2rem 0 1.1rem;display:flex;align-items:center;gap:.6rem}
+  h2:before{content:"";width:4px;height:1.05rem;background:var(--cyan);border-radius:2px}
+
+  /* case cards */
+  .cases{display:grid;gap:1rem}
+  .case{background:var(--panel);border:1px solid var(--line);border-radius:1rem;padding:1.35rem 1.4rem;transition:.15s}
+  .case:hover{border-color:#334155}
+  .case header{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;align-items:baseline}
+  .case h3{font-size:1.02rem}
+  .case .role{font-size:.75rem;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+  .case p{color:var(--dim);font-size:.9rem;margin:.7rem 0 .9rem}
+  .chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.85rem}
+  .chip{font-size:.72rem;color:var(--violet);border:1px solid rgba(167,139,250,.3);border-radius:.35rem;padding:.18rem .5rem}
+  .res{display:flex;gap:1.4rem;flex-wrap:wrap;font-size:.82rem;color:var(--dim);border-top:1px dashed var(--line);padding-top:.85rem}
+  .res b{color:var(--emerald)}
+  .case a.dg{color:var(--cyan);text-decoration:none;font-size:.82rem}
+  .case a.dg:hover{text-decoration:underline}
+
+  /* services */
+  table{width:100%;border-collapse:collapse;font-size:.88rem;background:var(--panel);border:1px solid var(--line);border-radius:.85rem;overflow:hidden}
+  th,td{padding:.8rem .95rem;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);background:rgba(2,6,23,.6)}
+  tr:last-child td{border-bottom:none}
+  td.price{color:var(--amber);white-space:nowrap;font-weight:600}
+
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-top:1rem}
+  .box{background:var(--panel);border:1px solid var(--line);border-radius:.85rem;padding:1.1rem 1.2rem}
+  .box h4{font-size:.9rem;margin-bottom:.6rem;color:var(--ink)}
+  .box ul{list-style:none;font-size:.86rem;color:var(--dim)}
+  .box li{padding-left:1.1rem;position:relative;margin-bottom:.4rem}
+  .box li:before{content:"→";position:absolute;left:0;color:var(--cyan);font-size:.8rem}
+
+  footer{margin-top:3.5rem;border-top:1px solid var(--line);padding-top:1.5rem;font-size:.85rem;color:var(--dim);
+    display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+  footer a{color:var(--cyan);text-decoration:none}
+  footer a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<noscript>
+  <div style="max-width:1080px;margin:0 auto 1.6rem;background:rgba(15,23,42,.7);border:1px solid #1e293b;border-radius:.75rem;padding:1rem 1.2rem;font-size:.85rem;color:#94a3b8">
+    <strong style="color:#e2e8f0">Ling Guiqian — Full-Stack Engineer.</strong>
+    Go / Java / SpringBoot backends, Vue front ends, MySQL &amp; Redis, Docker deployment ·
+    Quant trading systems (exchange APIs, realtime tick streams, backtest engines) ·
+    AI integration (LLM / TTS / avatar orchestration, self-hosted inference).
+    Three commercial systems delivered end-to-end as a solo engineer.
+    Rates from $35/hr; independent verification &amp; backtest audits from $300 (fixed).
+    Contact: yil72866@gmail.com
+  </div>
+</noscript>
+<div class="wrap">
+
+  <div class="top">
+    <div class="brand"><span class="dot"></span><span>Available for contract work</span></div>
+    <button class="lang" id="lang" onclick="toggleLang()">EN</button>
+  </div>
+
+  <h1>
+    <span class="t" data-zh="全栈工程 · 量化交易系统 · AI 产品化" data-en="Full-Stack Engineering · Quant Trading Systems · AI Products">全栈工程 · 量化交易系统 · AI 产品化</span>
+  </h1>
+  <p class="lede t"
+     data-zh="我独立交付完整系统：Go / Java 后端与高并发业务、Binance 行情与策略引擎、AI 多模型编排。源码完整、文档齐全、部署可复现——一个人从数据库设计做到上线。"
+     data-en="I deliver complete systems single-handedly: Go / Java backends, high-concurrency business logic, Binance market-data and strategy engines, and multi-model AI orchestration. Full source, written docs, reproducible deployment — one engineer, database schema to production.">
+  </p>
+
+  <div class="tags">
+    <span class="tag k">Go</span><span class="tag">Java · SpringBoot</span><span class="tag">Vue.js</span>
+    <span class="tag">MySQL · Redis</span><span class="tag">Docker · Nginx · Linux</span>
+    <span class="tag v">LLM / TTS / Agent Orchestration</span><span class="tag g">Binance API · Tick Stream</span>
+  </div>
+
+  <div class="cta">
+    <a class="btn primary" href="mailto:yil72866@gmail.com">yil72866@gmail.com</a>
+    <a class="btn" href="https://github.com/PoorThoth" target="_blank" rel="noopener">GitHub</a>
+    <a class="btn t" href="#services" data-zh="看我能接什么活" data-en="What I can build for you">看我能接什么活</a>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b>3</b><span class="t" data-zh="个商业项目独立交付（全栈）" data-en="commercial systems delivered end-to-end">个商业项目独立交付（全栈）</span></div>
+    <div class="stat"><b>60+</b><span class="t" data-zh="后端接口 / 单项目 20+ 张表 / 30+ 页面" data-en="backend APIs in one project · 20+ tables · 30+ pages">后端接口 / 单项目 20+ 张表 / 30+ 页面</span></div>
+    <div class="stat"><b>500</b><span class="t" data-zh="并发压测下零异常订单（Redis + 乐观锁双保障）" data-en="concurrent QPS load-test, zero order anomalies">并发压测下零异常订单（Redis + 乐观锁双保障）</span></div>
+    <div class="stat"><b>3s</b><span class="t" data-zh="AI 多模型编排首屏（形象/语音/对话三模型）" data-en="first paint with 3 AI models orchestrated">AI 多模型编排首屏（形象/语音/对话三模型）</span></div>
+  </div>
+
+  <h2><span class="t" data-zh="交付案例" data-en="Selected Work">交付案例</span></h2>
+  <div class="cases">
+
+    <article class="case">
+      <header>
+        <h3 class="t" data-zh="游戏代练撮合交易平台（代练通）" data-en="Game-Boosting Marketplace (“Dailiantong”)">游戏代练撮合交易平台（代练通）</h3>
+        <span class="role t" data-zh="全栈 · 独立交付" data-en="Full-stack · Solo">全栈 · 独立交付</span>
+      </header>
+      <p class="t"
+         data-zh="连接代练打手与玩家的担保交易平台：实名信用体系、接单大厅、订单状态机（待接单→进行中→验收→结算）、担保支付、实时 IM、评价与管理看板。核心难点是订单状态机的并发安全——状态误判直接造成重复接单与资金纠纷。"
+         data-en="An escrow marketplace matching game-boosters with players: identity & credit system, job board, order state machine, escrow payment, real-time IM, reviews and admin analytics. The hard part was concurrency-safe order state transitions — a mis-sequenced state causes double-claims and money disputes.">
+      </p>
+      <div class="chips"><span class="chip">SpringBoot</span><span class="chip">Vue.js</span><span class="chip">MySQL</span><span class="chip">Redis</span><span class="chip">WebSocket</span></div>
+      <div class="res">
+        <span class="t" data-zh="<b>20+</b> 张表 / <b>60+</b> 接口 / <b>30+</b> 页面" data-en="<b>20+</b> tables · <b>60+</b> APIs · <b>30+</b> pages"><b>20+</b> 张表 / <b>60+</b> 接口 / <b>30+</b> 页面</span>
+        <span class="t" data-zh="Redis 分布式锁 + 乐观锁 ⇒ <b>500 QPS</b> 压测零异常订单" data-en="Redis lock + optimistic locking ⇒ <b>500 QPS</b>, zero anomalies">Redis 分布式锁 + 乐观锁 ⇒ <b>500 QPS</b> 压测零异常订单</span>
+      </div>
+      <p style="margin:.85rem 0 0"><a class="dg t" href="diagrams/架构图-游戏代练平台.html" data-zh="查看系统架构图 →" data-en="View architecture diagram →">查看系统架构图 →</a></p>
+    </article>
+
+    <article class="case">
+      <header>
+        <h3 class="t" data-zh="宠物名片 AI 互动系统（宠名 AI）" data-en="Pet AI Card System (“Chongming AI”)">宠物名片 AI 互动系统（宠名 AI）</h3>
+        <span class="role t" data-zh="全栈 + AI 编排 · 独立交付" data-en="Full-stack + AI orchestration · Solo">全栈 + AI 编排 · 独立交付</span>
+      </header>
+      <p class="t"
+         data-zh="每只宠物一张二维码名片：扫码即出 AI 生成形象，并以宠物第一人称语音讲解品种、性格、喜好，支持访客实时问答。难点是多模型编排——形象生成 2s、TTS、LLM 对话 15s 的响应差异极大，需要异步流水线 + 缓存把首访压进 3 秒。"
+         data-en="A QR business card per pet: scan it and an AI-generated avatar speaks in the pet’s first-person voice about breed, temperament and habits, with live Q&amp;A for visitors. The hard part was orchestrating wildly uneven model latencies (2s avatar, TTS, 15s LLM) behind an async pipeline and cache to keep first paint under 3 seconds.">
+      </p>
+      <div class="chips"><span class="chip">SpringBoot</span><span class="chip">Vue.js</span><span class="chip">Redis</span><span class="chip">LLM</span><span class="chip">TTS</span></div>
+      <div class="res">
+        <span class="t" data-zh="三模型异步流水线 ⇒ 首访 <b>3s</b> 内渲染" data-en="Async 3-model pipeline ⇒ first paint <b>&lt;3s</b>">三模型异步流水线 ⇒ 首访 <b>3s</b> 内渲染</span>
+        <span class="t" data-zh="品种 Prompt 模板 + 上下文注入 ⇒ 人设一致的对话" data-en="Breed-scoped prompts + context injection ⇒ consistent persona">品种 Prompt 模板 + 上下文注入 ⇒ 人设一致的对话</span>
+      </div>
+      <p style="margin:.85rem 0 0"><a class="dg t" href="diagrams/架构图-宠物名片AI互动.html" data-zh="查看系统架构图 →" data-en="View architecture diagram →">查看系统架构图 →</a></p>
+    </article>
+
+    <article class="case">
+      <header>
+        <h3 class="t" data-zh="茶企 AI 全链路溯源码系统（茶源链）" data-en="Tea Traceability + AI Guide (“Chayuanlian”)">茶企 AI 全链路溯源码系统（茶源链）</h3>
+        <span class="role t" data-zh="全栈 + AI 编排 · 独立交付" data-en="Full-stack + AI orchestration · Solo">全栈 + AI 编排 · 独立交付</span>
+      </header>
+      <p class="t"
+         data-zh="茶饼扫码可见种植→加工→包装→物流四环节溯源时间轴并验真，同时由 AI 虚拟茶艺师语音讲解产地故事与冲泡建议。难点是四角色数据采集的权限隔离与多品类时间轴复用——绿茶/红茶/普洱加工环节差异大，需配置化模板引擎一套代码适配。"
+         data-en="Scanning a tea cake reveals a four-stage traceability timeline (cultivation → processing → packing → logistics) with authenticity verification, narrated by an AI tea-master avatar. The hard parts: row-level role isolation across four data-entry roles, and one codebase serving structurally different process flows (green / black / pu’erh) via a config-driven template engine.">
+      </p>
+      <div class="chips"><span class="chip">SpringBoot</span><span class="chip">Vue.js</span><span class="chip">MySQL</span><span class="chip">RBAC</span><span class="chip">Hash Anchoring</span></div>
+      <div class="res">
+        <span class="t" data-zh="RBAC + 行级过滤 ⇒ 四角色数据隔离" data-en="RBAC + row-level filtering ⇒ 4-role isolation">RBAC + 行级过滤 ⇒ 四角色数据隔离</span>
+        <span class="t" data-zh="配置化环节模板 ⇒ 一套代码适配多品类" data-en="Config-driven stage templates ⇒ one codebase, many categories">配置化环节模板 ⇒ 一套代码适配多品类</span>
+      </div>
+      <p style="margin:.85rem 0 0"><a class="dg t" href="diagrams/架构图-茶企AI溯源码.html" data-zh="查看系统架构图 →" data-en="View architecture diagram →">查看系统架构图 →</a></p>
+    </article>
+
+    <article class="case">
+      <header>
+        <h3 class="t" data-zh="量化交易系统 · 行情与策略引擎（在职方向，细节受保密约束）" data-en="Quant Trading Systems · Market Data &amp; Strategy Engine (NDA-limited)">量化交易系统 · 行情与策略引擎（在职方向，细节受保密约束）</h3>
+        <span class="role t" data-zh="Go 后端 · 数据管线" data-en="Go backend · data pipeline">Go 后端 · 数据管线</span>
+      </header>
+      <p class="t"
+         data-zh="生产环境 Go 服务：Binance API / WebSocket 实时 tick 流接入、K 线数据管线与增量采集、策略引擎与回测、Docker 部署、MySQL 大数据量处理。可对外展开的是方法：数据口径与时区纪律、增量采集边界、回测成交基准与滑点假设、独立复算核验。"
+         data-en="Production Go services: Binance REST/WebSocket tick ingestion, kline pipelines with incremental backfill, strategy engine and backtesting, Docker deployment, large-scale MySQL workloads. What I can discuss openly is method: data-timezone discipline, incremental-backfill boundaries, backtest fill assumptions and slippage, and independent re-computation for verification.">
+      </p>
+      <div class="chips"><span class="chip">Go</span><span class="chip">Binance API</span><span class="chip">WebSocket</span><span class="chip">MySQL</span><span class="chip">Docker</span><span class="chip">Backtesting</span></div>
+      <div class="res">
+        <span class="t" data-zh="实时 tick 流 + 增量 K 线采集管线" data-en="Realtime tick stream + incremental kline pipeline">实时 tick 流 + 增量 K 线采集管线</span>
+        <span class="t" data-zh="回测成交基准/滑点/资金费口径的独立核验" data-en="Independent verification of fill, slippage and funding assumptions">回测成交基准/滑点/资金费口径的独立核验</span>
+      </div>
+    </article>
+
+  </div>
+
+  <h2 id="services"><span class="t" data-zh="我能接什么活（含起价）" data-en="What I can build (and what it costs)">我能接什么活（含起价）</span></h2>
+  <table>
+    <tr>
+      <th class="t" data-zh="方向" data-en="Engagement">方向</th>
+      <th class="t" data-zh="典型交付" data-en="Typical deliverable">典型交付</th>
+      <th class="t" data-zh="起价" data-en="From">起价</th>
+    </tr>
+    <tr>
+      <td class="t" data-zh="Go / Java 后端与 API" data-en="Go / Java backend &amp; APIs">Go / Java 后端与 API</td>
+      <td class="t" data-zh="REST/gRPC 服务、并发与一致性、数据库设计与优化、Docker 部署" data-en="REST/gRPC services, concurrency &amp; consistency, schema design and tuning, Docker deployment">REST/gRPC 服务、并发与一致性、数据库设计与优化、Docker 部署</td>
+      <td class="price">$40/hr</td>
+    </tr>
+    <tr>
+      <td class="t" data-zh="Vue 全栈 / 管理后台 / 小程序" data-en="Vue full-stack / admin / mini-program">Vue 全栈 / 管理后台 / 小程序</td>
+      <td class="t" data-zh="Vue3 + 后端一体交付、权限体系、数据看板、小程序端" data-en="Vue3 + backend delivered together, permissions, dashboards, mini-program front end">Vue3 + 后端一体交付、权限体系、数据看板、小程序端</td>
+      <td class="price">$35/hr</td>
+    </tr>
+    <tr>
+      <td class="t" data-zh="AI 集成与编排" data-en="AI integration &amp; orchestration">AI 集成与编排</td>
+      <td class="t" data-zh="LLM/语音/形象多模型接入、RAG、Agent 工作流、自建推理服务部署与调优" data-en="LLM / TTS / avatar model integration, RAG, agent workflows, self-hosted inference deployment &amp; tuning">LLM/语音/形象多模型接入、RAG、Agent 工作流、自建推理服务部署与调优</td>
+      <td class="price">$45/hr</td>
+    </tr>
+    <tr>
+      <td class="t" data-zh="量化 / 交易系统开发" data-en="Quant / trading system engineering">量化 / 交易系统开发</td>
+      <td class="t" data-zh="交易所 API 接入、行情管线、订单与风控、回测引擎、策略实现" data-en="Exchange API integration, market-data pipeline, order &amp; risk layer, backtest engine, strategy implementation">交易所 API 接入、行情管线、订单与风控、回测引擎、策略实现</td>
+      <td class="price">$50/hr</td>
+    </tr>
+    <tr>
+      <td class="t" data-zh="独立核验 / 回测审计（固定价）" data-en="Independent verification / backtest audit (fixed price)">独立核验 / 回测审计（固定价）</td>
+      <td class="t" data-zh="在跑之前预注册判据，独立复算并出具「通过 / 不通过」报告、复算脚本与判据表" data-en="Criteria pre-registered before running, independent re-computation, pass/fail report plus code and criteria table">在跑之前预注册判据，独立复算并出具「通过 / 不通过」报告、复算脚本与判据表</td>
+      <td class="price">$300 / $800 / $1,500</td>
+    </tr>
+  </table>
+
+  <div class="grid2">
+    <div class="box">
+      <h4 class="t" data-zh="交付与结算" data-en="Delivery &amp; payment">交付与结算</h4>
+      <ul>
+        <li class="t" data-zh="源码 + 部署说明 + 使用文档，一次交付" data-en="Source code + deployment guide + usage docs, delivered together">源码 + 部署说明 + 使用文档，一次交付</li>
+        <li class="t" data-zh="里程碑结算 30% / 70%，PayPal 收款" data-en="Milestone-based: 30% / 70%, paid via PayPal">里程碑结算 30% / 70%，PayPal 收款</li>
+        <li class="t" data-zh="两轮修改包含在报价内，超出按小时计" data-en="Two revision rounds included; further changes billed hourly">两轮修改包含在报价内，超出按小时计</li>
+        <li class="t" data-zh="异步协作，文字沟通为主（无需固定会议）" data-en="Async collaboration, written updates (no standing meetings required)">异步协作，文字沟通为主（无需固定会议）</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4 class="t" data-zh="我不会接的" data-en="What I turn down">我不会接的</h4>
+      <ul>
+        <li class="t" data-zh="与现职雇主业务直接竞争的同类系统" data-en="Systems that directly compete with my current employer’s business">与现职雇主业务直接竞争的同类系统</li>
+        <li class="t" data-zh="无法预先写清验收标准的「看着做」需求" data-en="“Just make it look good” requests with no testable acceptance criteria">无法预先写清验收标准的「看着做」需求</li>
+        <li class="t" data-zh="要求交付后长期免费维护但不计价的项目" data-en="Unlimited unbilled maintenance after hand-over">要求交付后长期免费维护但不计价的项目</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <div>
+      <strong class="t" data-zh="凌贵黔 · Ling Guiqian" data-en="Ling Guiqian · 凌贵黔">凌贵黔 · Ling Guiqian</strong><br>
+      <span class="t" data-zh="全栈工程 / 量化系统 / AI 集成 · 远程协作 · 中文 / English" data-en="Full-stack / quant systems / AI integration · remote · Chinese / English">全栈工程 / 量化系统 / AI 集成 · 远程协作 · 中文 / English</span>
+    </div>
+    <div>
+      <a href="mailto:yil72866@gmail.com">yil72866@gmail.com</a><br>
+      <a href="https://github.com/PoorThoth" target="_blank" rel="noopener">github.com/PoorThoth</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  var LANG = /(^|[#&])en\b/i.test(location.hash) ? 'en' : 'zh';
+  function applyLang(){
+    document.documentElement.lang = LANG === 'zh' ? 'zh-CN' : 'en';
+    document.querySelectorAll('.t').forEach(function(el){
+      var v = el.getAttribute(LANG === 'zh' ? 'data-zh' : 'data-en');
+      if (v !== null) el.innerHTML = v;
+    });
+    document.getElementById('lang').textContent = LANG === 'zh' ? 'EN' : '中文';
+  }
+  function toggleLang(){ LANG = (LANG === 'zh') ? 'en' : 'zh'; applyLang(); }
+  applyLang();
+</script>
+</body>
+</html>
