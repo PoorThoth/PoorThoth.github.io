@@ -207,8 +207,9 @@
   /* ---------- 切换按钮 ---------- */
   function mountButton() {
     try {
-      var nav = document.querySelector("#nav");
-      if (!nav || document.getElementById("wave-lang-btn")) return;
+      // 放左上角：优先挂在站点名旁边（#blog-info），避免右上角遮挡菜单/其他按钮
+      var host = document.querySelector("#nav #blog-info") || document.querySelector("#nav");
+      if (!host || document.getElementById("wave-lang-btn")) return;
       var b = document.createElement("button");
       b.id = "wave-lang-btn";
       b.type = "button";
@@ -217,7 +218,7 @@
         ev.preventDefault(); ev.stopPropagation();
         set(CUR === "zh" ? "en" : "zh");
       });
-      nav.appendChild(b);
+      host.appendChild(b);
     } catch (e) {}
   }
 

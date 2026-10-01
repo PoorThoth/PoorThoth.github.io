@@ -401,9 +401,15 @@
     if (header.querySelector(".cine-bar")) return;
 
     // 8.1 把背景画单独抽成一层，便于视差
-    var bg = header.style.backgroundImage;
-    if (!bg || bg === "none") { try { bg = getComputedStyle(header).backgroundImage; } catch (e) { } }
-    if (bg && bg !== "none") {
+    //     注意：首次会把 header 的 inline background 置为 none，所以必须把原图记在元素上，
+    //     否则语言切换重建（resetInjected → boot）时拿不到图，背景会永久消失。
+    if (!header.__waveBg) {
+      var b0 = header.style.backgroundImage;
+      if (!b0 || b0 === "none") { try { b0 = getComputedStyle(header).backgroundImage; } catch (e) { } }
+      if (b0 && b0 !== "none") header.__waveBg = b0;
+    }
+    var bg = header.__waveBg;
+    if (bg) {
       var art = document.createElement("div");
       art.className = "wave-art";
       art.setAttribute("data-wi", "1");
