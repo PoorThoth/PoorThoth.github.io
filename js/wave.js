@@ -526,6 +526,74 @@
     } catch (e) { /* 静默：手机布局失败不影响桌面 */ }
   }
 
+
+  /* ---------------- 9. 网站信息：自己取数（不蒜子太不稳） ----------------
+     · 访客数：visitorbadge 公开 API（带 CORS）；取不到值就整行不显示 —— 绝不留转圈
+     · 建站天数：本地算，永远可用
+     · 行内用 data-wi 标记，语言切换时会随其它注入节点一起重建 */
+  var SITE_START = "2023-06-01";   // 博客最早的文章月份（归档页可见「六月 2023」）
+
+  function initStats() {
+    // 主题即使关掉 busuanzi 仍会挂它的外部脚本（一个已停止维护的第三方），这里直接摘掉
+    try {
+      var ss = document.querySelectorAll('script[src*="busuanzi"]');
+      for (var q = ss.length - 1; q >= 0; q--) { if (ss[q].parentNode) ss[q].parentNode.removeChild(ss[q]); }
+    } catch (e) { }
+    var box = document.querySelector("#aside-content .card-webinfo .webinfo");
+    diag("stats:box=" + (box ? "ok" : "null"));   // 诊断：卡片有没有找到
+    if (!box) return;
+    var isEn = isEN();
+
+    // 1) 清掉不蒜子的死行（容器名 busuanzi_value_* / busuanzi_container_*）
+    var dead = box.querySelectorAll(".webinfo-item");
+    for (var i = dead.length - 1; i >= 0; i--) {
+      if (/busuanzi/i.test(dead[i].innerHTML)) dead[i].parentNode.removeChild(dead[i]);
+    }
+
+    function addRow(id, label, value) {
+      if (document.getElementById(id)) return;
+      var row = document.createElement("div");
+      row.className = "webinfo-item";
+      row.id = id;
+      row.setAttribute("data-wi", "1");
+      row.innerHTML = '<div class="item-name">' + label + ' :</div><div class="item-count">' + value + '</div>';
+      // 插在「最后更新时间」之前，保持原有顺序观感
+      var rows = box.querySelectorAll(".webinfo-item");
+      var last = null;
+      for (var k = 0; k < rows.length; k++) {
+        if (/最后更新|Last Updated/i.test(rows[k].textContent || "")) last = rows[k];
+      }
+      if (last) box.insertBefore(row, last); else box.appendChild(row);
+    }
+
+    // 2) 建站天数
+    try {
+      var d0 = new Date(SITE_START + "T00:00:00Z").getTime();
+      var days = Math.max(1, Math.round((Date.now() - d0) / 86400000));
+      addRow("wv-days", isEn ? "Days online" : "建站天数", isEn ? (days + " days") : (days + " 天"));
+      diag("stats:days=" + days);
+    } catch (e) { }
+
+    // 3) 访客数（异步；拿不到就不加这一行）
+    try {
+      if (!document.getElementById("wv-uv") && window.fetch) {
+        var ctl = ("AbortController" in window) ? new AbortController() : null;
+        var timer = ctl ? setTimeout(function () { ctl.abort(); }, 7000) : null;
+        fetch("https://api.visitorbadge.io/api/visitors?path=lingguiqian.com&label=Visitors&countColor=%237C9D9C",
+              { mode: "cors", signal: ctl ? ctl.signal : undefined })
+          .then(function (r) { return r.text(); })
+          .then(function (svg) {
+            if (timer) clearTimeout(timer);
+            var m = />([0-9][0-9,\.kK]*)\s*</.exec(svg || "");
+            if (m && !document.getElementById("wv-uv")) {
+              addRow("wv-uv", isEn ? "Visitors" : "本站访客数", m[1]);
+            }
+          })
+          .catch(function () { if (timer) clearTimeout(timer); });
+      }
+    } catch (e) { }
+  }
+
   /* 语言切换：清掉本脚本注入的节点后重建（文章正文不动） */
   function resetInjected() {
     try {
@@ -556,6 +624,7 @@
     try { initCursor(); } catch (e) { }
     try { initCine(); } catch (e) { }
     try { applyMobileHero(); } catch (e) { }
+    try { initStats(); } catch (e) { }
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();
